@@ -86,7 +86,7 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Configuring ${COLOR_GREEN}.vimrc ${
   ( curl -o $HOME/.vimrc https://raw.githubusercontent.com/CosasDePuma/Setup/master/vim/.vimrc ) 1>/dev/null 2>/dev/null 3>/dev/null
   if [ $? -ne 0 ]; then err .vimrc configure; fi
   vim -c "PlugInstall" -c "q!" -c "q!"
-  sed -i -e 's/# colorscheme/colorscheme/g' $HOME/.vimrc
+  sed -i -e 's/" colorscheme/colorscheme/g' $HOME/.vimrc
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}.vimrc ${COLOR_BLUE}successfully configured!${NO_COLOR}"
 
 # ----- OH-MY-ZSH -----

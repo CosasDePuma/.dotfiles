@@ -4,7 +4,7 @@ Plug 'neutaaaaan/iosvkem'
 call plug#end()
 
 " Themes
-# colorscheme Iosvkem
+" colorscheme Iosvkem
 
 " Indentation and tabs
 set expandtab
