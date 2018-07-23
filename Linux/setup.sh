@@ -73,6 +73,14 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}vim ${NO_C
 	if [ $? -ne 0 ]; then err vim install; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}vim ${COLOR_BLUE}successfully installed!${NO_COLOR}"
 
+# ----- VIM-PLUG -----
+echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}vim-plug ${NO_COLOR}"
+	if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+    ( curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim ) 1>/dev/null 2>/dev/null 3>/dev/null
+	  if [ $? -ne 0 ]; then err vim-plug install; fi
+  fi
+echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}vim-plug ${COLOR_BLUE}successfully installed!${NO_COLOR}"
+
 # ----- OH-MY-ZSH -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}oh-my-zsh ${NO_COLOR}"
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
@@ -115,6 +123,10 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}bullet-tra
 
     if [ $? -ne 0 ]; then err "bullet-train zsh theme" config; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}bullet-train zsh theme ${COLOR_BLUE}successfully installed! ${NO_COLOR}"
+
+# >> PERMISSIONS
+# -------------------
+[ "$SUDO_USER" != "" ] && chown -R $SUDO_USER $HOME/.vim $HOME/.vimrc $HOME/.oh-my-zsh $HOME/.zshrc
 
 # >> EXIT
 # -------------------
