@@ -1,5 +1,8 @@
 #! /bin/sh
 
+# >> COLORS
+# --------------
+
 BOLD="\033[1m"
 NO_COLOR="\033[0m"
 COLOR_BLUE="\033[38;5;12m"
@@ -8,17 +11,29 @@ COLOR_GREEN="\033[38;5;40m"
 COLOR_YELLOW="\033[38;5;228m"
 BACKGROUND_RED="\033[48;5;9m"
 
+# >> DISTRO CONFIG
+# ---------------------
+
 MANAGER="apt install"
+
+# >> PRIVILEGES CHECKER
+# --------------------------
 
 if [ "$(id -u)" != "0" ]; then
 	echo "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: You must be root${NO_COLOR}"
 	exit
 fi
 
+# >> FUNCTIONS
+# -----------------
+
 err() {
 	echo "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: Bad return code while trying to $2 $1${NO_COLOR}"
     exit
 }
+
+# >> UNINSTALLER
+# -------------------
 
 if [ "$1" = "uninstall" ]; then
     echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Uninstalling custom configuration!"
@@ -28,16 +43,22 @@ if [ "$1" = "uninstall" ]; then
     exit
 fi
 
+# >> MAIN SCRIPT
+# -------------------
+
+# ----- GIT -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}git ${NO_COLOR}"
 	( git --version || ( ${MANAGER} -y git ) ) 1>/dev/null 2>/dev/null 3>/dev/null
 	if [ $? -ne 0 ]; then err git install; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}git ${COLOR_BLUE}successfully installed!${NO_COLOR}"
 
+# ----- CURL -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}curl ${NO_COLOR}"
 	( curl --version || wget --version || ( ${MANAGER} -y curl ) ) 1>/dev/null 2>/dev/null 3>/dev/null
 	if [ $? -ne 0 ]; then err git install; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}curl ${COLOR_BLUE}successfully installed!${NO_COLOR}"
 
+# ----- ZSH -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}zsh ${NO_COLOR}"
 	( zsh --version || ( ${MANAGER} -y zsh ) ) 1>/dev/null 2>/dev/null 3>/dev/null
 	if [ $? -ne 0 ]; then err zsh install; fi
@@ -46,11 +67,13 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}zsh ${NO_C
 	if [ $? -ne 0 ]; then err zsh configure; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}zsh ${COLOR_BLUE}successfully installed!${NO_COLOR}"
 
+# ----- VIM -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}vim ${NO_COLOR}"
 	( vim --version || ( ${MANAGER} -y vim ) ) 1>/dev/null 2>/dev/null 3>/dev/null
 	if [ $? -ne 0 ]; then err vim install; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}vim ${COLOR_BLUE}successfully installed!${NO_COLOR}"
 
+# ----- OH-MY-ZSH -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}oh-my-zsh ${NO_COLOR}"
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         ( git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh ) 1>/dev/null 2>/dev/null 3>/dev/null
@@ -62,6 +85,7 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}oh-my-zsh 
     fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}oh-my-zsh ${COLOR_BLUE}successfully installed! ${NO_COLOR}"
 
+# ----- BULLET-TRAIN ZSH THEME -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}bullet-train zsh theme ${NO_COLOR}"
     ( curl -o $HOME/.oh-my-zsh/themes/bullet-train.zsh-theme https://raw.githubusercontent.com/caiogondim/bullet-train-oh-my-zsh-theme/master/bullet-train.zsh-theme ) 1>/dev/null 2>/dev/null 3>/dev/null
     if [ $? -ne 0 ]; then err "bullet-train zsh theme" download; fi
@@ -91,6 +115,9 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}bullet-tra
 
     if [ $? -ne 0 ]; then err "bullet-train zsh theme" config; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}bullet-train zsh theme ${COLOR_BLUE}successfully installed! ${NO_COLOR}"
+
+# >> EXIT
+# -------------------
 
 echo "${BOLD}${COLOR_YELLOW}[!] ${COLOR_BLUE}All programs successfully installed. Please, close all your open terminals and/or reboot the computer... ${NO_COLOR}"
     exit
