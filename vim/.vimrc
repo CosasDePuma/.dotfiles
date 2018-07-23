@@ -3,10 +3,8 @@ call plug#begin('$HOME/.vim/plugged')
 Plug 'neutaaaaan/iosvkem'
 call plug#end()
 
-" Execute :PlugInstall on your first run
-
 " Themes
-colorscheme Iosvkem
+# colorscheme Iosvkem
 
 " Indentation and tabs
 set expandtab

@@ -37,7 +37,7 @@ err() {
 
 if [ "$1" = "uninstall" ]; then
     echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Uninstalling custom configuration!"
-    ( rm -rf $HOME/.oh-my-zsh $HOME/.zsh* && sed -i -e 's/$(which $SHELL)/$(which bash)/g' /etc/passwd && apt-get purge -y vim zsh vim fonts-powerline ttf-ancient-fonts ) 1>/dev/null 2>/dev/null 3>/dev/null
+    ( rm -rf $HOME/.oh-my-zsh $HOME/.zsh* $HOME/.vim* && sed -i -e 's/$(which $SHELL)/$(which bash)/g' /etc/passwd && apt-get purge -y vim zsh vim fonts-powerline ttf-ancient-fonts ) 1>/dev/null 2>/dev/null 3>/dev/null
     if [ $? -ne 0 ]; then err configuration uninstall; fi
     echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_BLUE}Successfully uninstalled!"
     exit
@@ -80,6 +80,14 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}vim-plug $
 	  if [ $? -ne 0 ]; then err vim-plug install; fi
   fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}vim-plug ${COLOR_BLUE}successfully installed!${NO_COLOR}"
+
+# ----- .VIMRC -----
+echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Configuring ${COLOR_GREEN}.vimrc ${NO_COLOR}"
+  ( curl -o $HOME/.vimrc https://raw.githubusercontent.com/CosasDePuma/Setup/master/vim/.vimrc ) 1>/dev/null 2>/dev/null 3>/dev/null
+  if [ $? -ne 0 ]; then err .vimrc configure; fi
+  vim -c "PlugInstall" -c "q!" -c "q!"
+  sed -i -e 's/# colorscheme/colorscheme/g' $HOME/.vimrc
+echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}.vimrc ${COLOR_BLUE}successfully configured!${NO_COLOR}"
 
 # ----- OH-MY-ZSH -----
 echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}oh-my-zsh ${NO_COLOR}"
