@@ -1,11 +1,12 @@
 " Plugins (vim-plug required)
 call plug#begin('$HOME/.vim/plugged')
-Plug 'nightsense/snow'
+Plug 'neutaaaaan/iosvkem'
 call plug#end()
 
+" Execute :PlugInstall on your first run
+
 " Themes
-colorscheme snow
-set background=dark
+colorscheme Iosvkem
 
 " Indentation and tabs
 set expandtab
