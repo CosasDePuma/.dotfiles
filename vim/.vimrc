@@ -9,13 +9,10 @@ call plug#end()
 " colorscheme Iosvkem
 set background=dark
 set termguicolors
-colorscheme Iosvkem
 
 " Indentation and tabs
 set expandtab
 set autoindent
 set tabstop=4
 set shiftwidth=4
-set softtabstop=4
-
-
+set softtabstop=4 
