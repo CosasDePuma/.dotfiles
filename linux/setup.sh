@@ -37,7 +37,7 @@ err() {
 
 if [ "$1" = "uninstall" ]; then
     echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Uninstalling custom configuration!"
-    ( rm -rf $HOME/.oh-my-zsh $HOME/.zsh* $HOME/.vim* && ( [ "$SUDO_USER" != "" ] && chsh -s $(which bash) $SUDO_USER || chsh -s $(which bash) $USER ) && apt-get purge -y vim zsh vim fonts-powerline ttf-ancient-fonts ) 1>/dev/null 2>/dev/null 3>/dev/null
+    ( rm -rf $HOME/.oh-my-zsh $HOME/.zsh* $HOME/.vim* $HOME/.mysetup.sh && ( [ "$SUDO_USER" != "" ] && chsh -s $(which bash) $SUDO_USER || chsh -s $(which bash) $USER ) && apt-get purge -y vim zsh vim fonts-powerline ttf-ancient-fonts ) 1>/dev/null 2>/dev/null 3>/dev/null
     if [ $? -ne 0 ]; then err configuration uninstall; fi
     echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_BLUE}Successfully uninstalled!"
     exit
@@ -132,12 +132,21 @@ echo "${BOLD}${COLOR_YELLOW}[.] ${COLOR_BLUE}Installing ${COLOR_GREEN}bullet-tra
     if [ $? -ne 0 ]; then err "bullet-train zsh theme" config; fi
 echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}bullet-train zsh theme ${COLOR_BLUE}successfully installed! ${NO_COLOR}"
 
+# >> SHORTCUTS
+# -----------------
+echo -n "${BOLD}${COLOR_YELLOW}[*] ${COLOR_BLUE}Configuring ${COLOR_GREEN}mysetup ${COLOR_BLUE}command${NO_COLOR}"
+( curl -o $HOME/.mysetup.sh https://raw.githubusercontent.com/CosasDePuma/Setup/master/linux/setup.sh ) 1>/dev/null 2>/dev/null 3>/dev/null
+if [ $? -ne 0 ]; then err "mysetup command" download; fi
+echo "alias mysetup='( curl www.google.com ) &>/dev/null && sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/CosasDePuma/Setup/master/linux/setup.sh)\" || sh $HOME/.mysetup.sh\'" >> $HOME/.zshrc
+if [ $? -ne 0 ]; then err "mysetup command" config; fi
+echo "${BOLD}${COLOR_BLUE}. Run ${COLOR_GREEN}mysetup uninstall ${COLOR_BLUE}to remove custom configuration${NO_COLOR}"
+
 # >> PERMISSIONS
 # -------------------
-[ "$SUDO_USER" != "" ] && chown -R $SUDO_USER $HOME/.vim $HOME/.vimrc $HOME/.oh-my-zsh $HOME/.zshrc
+[ "$SUDO_USER" != "" ] && CHOWN_USER=$SUDO_USER || CHOWN_USER=$USER
+( chown -R $CHOWN_USER $HOME/.vim $HOME/.vimrc $HOME/.oh-my-zsh $HOME/.zshrc $HOME/.mysetup.sh ) 1>/dev/null 2>/dev/null 3>/dev/null
 
 # >> EXIT
 # -------------------
-
 echo "${BOLD}${COLOR_YELLOW}[!] ${COLOR_BLUE}All programs successfully installed. Please, close all your open terminals and/or reboot the computer... ${NO_COLOR}"
-    exit
+exit
