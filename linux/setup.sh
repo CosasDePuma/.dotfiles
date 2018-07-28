@@ -134,6 +134,7 @@ echo "${BOLD}${COLOR_YELLOW}[✓] ${COLOR_GREEN}bullet-train zsh theme ${COLOR_B
 
 # >> SHORTCUTS
 # -----------------
+
 echo -n "${BOLD}${COLOR_YELLOW}[*] ${COLOR_BLUE}Configuring ${COLOR_GREEN}mysetup ${COLOR_BLUE}command${NO_COLOR}"
 ( curl -o $HOME/.mysetup.sh https://raw.githubusercontent.com/CosasDePuma/Setup/master/linux/setup.sh ) 1>/dev/null 2>/dev/null 3>/dev/null
 if [ $? -ne 0 ]; then err "mysetup command" download; fi
@@ -143,10 +144,12 @@ echo "${BOLD}${COLOR_BLUE}. Run ${COLOR_GREEN}mysetup uninstall ${COLOR_BLUE}to 
 
 # >> PERMISSIONS
 # -------------------
+
 [ "$SUDO_USER" != "" ] && CHOWN_USER=$SUDO_USER || CHOWN_USER=$USER
 ( chown -R $CHOWN_USER $HOME/.vim $HOME/.vimrc $HOME/.oh-my-zsh $HOME/.zshrc $HOME/.mysetup.sh ) 1>/dev/null 2>/dev/null 3>/dev/null
 
 # >> EXIT
 # -------------------
+
 echo "${BOLD}${COLOR_YELLOW}[!] ${COLOR_BLUE}All programs successfully installed. Please, close all your open terminals and/or reboot the computer... ${NO_COLOR}"
 exit
