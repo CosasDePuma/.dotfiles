@@ -27,7 +27,7 @@ fi
 
 
 iptables -t nat "$action" OUTPUT -m owner --uid-owner "$tor_uid" -j RETURN
-ptables -t nat "$action" OUTPUT -p udp --dport 53 -j REDIRECT --to-ports "$dns_port"
+iptables -t nat "$action" OUTPUT -p udp --dport 53 -j REDIRECT --to-ports "$dns_port"
 
 for clearnet in 127.0.0.0/9 127.128.0.0/10; do
 		iptables -t nat "$action" OUTPUT -d "$clearnet" -j RETURN
