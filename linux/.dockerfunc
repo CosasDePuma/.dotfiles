@@ -1,0 +1,102 @@
+#  -------------------------
+# |        FUNCTIONS        |
+#  -------------------------
+
+docker_purge() {
+    local containers
+    containers=( $(docker ps -aq) )
+
+	local volumes
+	volumes=( $(docker ps --filter status=exited -q) )
+
+	local images
+	images=( $(docker images -q) )
+
+    docker stop ${containers[@]}
+    docker rm ${containers[@]}
+	docker rm -v ${volumes[@]}
+    docker rmi -f ${images[@]}
+}
+
+
+#  -------------------------
+# |  THIRD-PART CONTAINERS  |
+#  -------------------------
+
+hollywood() {
+	docker run --rm --interactive --tty							\
+		--name hollywood                                        \
+		jess/hollywood
+}
+
+netcat() {
+	docker run --interactive --tty								\
+		--net host                                              \
+		jess/netcat "$@"
+}
+alias nc=netcat
+
+nmap() {
+	docker run --rm --interactive --tty							\
+		--net host                              				\
+		jess/nmap "$@"
+}
+
+steam() {
+	docker run --detach --tty									\
+		--volume /tmp/.X11-unix:/tmp/.X11-unix					\
+		--env DISPLAY=unix$DISPLAY								\
+		--device /dev/dri/card0									\
+		--volume /run/user/$UID/pulse/native:/tmp/pulse			\
+		--volume /dev/shm:/dev/shm								\
+		--volume /etc/machine-id:/etc/machine-id				\
+		--name steam											\
+		sassmann/ubuntu-steam									\
+												2&>/dev/null || \
+	docker start steam
+}
+
+tor() {
+	if [ ! -d /etc/tor/ ]; then
+		sudo mkdir -p /etc/tor
+	fi
+
+	if [ ! -f /etc/tor/torrc.default ]; then
+		echo "SocksPort 0.0.0.0:9050" > ~/torrc.default
+		echo "Log debug stderr"      >> ~/torrc.default
+		sudo mv ~/torrc.default /etc/tor/torrc.default
+	fi
+
+	docker run --detach											\
+		--restart always										\
+		--volume /etc/localtime:/etc/localtime:ro				\
+		--publish 127.0.1.1:9050:9050							\
+		--name torproxy											\
+		jess/tor-proxy											\
+												2&>/dev/null || \
+		docker stop torproxy; docker start torproxy
+}
+
+tor-browser() {
+    docker run                                                  \
+        --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
+        --env DISPLAY=unix$DISPLAY                              \
+        --volume /dev/snd:/dev/snd                              \
+        --volume /dev/shm:/dev/shm                              \
+        --volume /etc/machine-id:/etc/machine-id:ro             \
+        jess/tor-browser
+}
+
+
+visualstudio() {
+	docker run --detach --rm                            		\
+		--volume /etc/localtime:/etc/localtime:ro     			\
+		--volume /tmp/.X11-unix:/tmp/.X11-unix        			\
+		--env DISPLAY=unix$DISPLAY                   			\
+        --volume $PWD:/home/user/code                 			\
+		--name visualstudio                     				\
+		jess/vscode
+
+    # TODO: Extensions
+}
+alias code=visualstudio
