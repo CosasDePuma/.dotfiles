@@ -89,13 +89,13 @@ tor-browser() {
 
 
 visualstudio() {
-	docker run --detach --rm                            		\
-		--volume /etc/localtime:/etc/localtime:ro     			\
-		--volume /tmp/.X11-unix:/tmp/.X11-unix        			\
-		--env DISPLAY=unix$DISPLAY                   			\
-        --volume $PWD:/home/user/code                 			\
-		--name visualstudio                     				\
-		jess/vscode
+	docker run --detach --rm                        \
+		--volume /etc/localtime:/etc/localtime:ro   \
+		--volume /tmp/.X11-unix:/tmp/.X11-unix      \
+		--env DISPLAY=unix$DISPLAY                  \
+        --volume $PWD:/home/user/code               \
+		--name visualstudio                         \
+        jess/vscode
 
     # TODO: Extensions
 }
