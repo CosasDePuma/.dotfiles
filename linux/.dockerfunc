@@ -23,15 +23,37 @@ docker_purge() {
 # |  THIRD-PART CONTAINERS  |
 #  -------------------------
 
+eclipse() {
+    docker run --interactive --tty                              \
+        --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
+        --env DISPLAY=unix$DISPLAY                              \
+        --volume $PWD:/home/developer                           \
+        --name eclipse                                          \
+        rafdouglas/eclipse_docker:eclipse_mars_JavaEE           \
+                                                             || \
+    docker start eclipse
+}
+
 hollywood() {
     docker run --rm --interactive --tty                         \
         --name hollywood                                        \
         jess/hollywood
 }
 
-netcat() {
+netbeans() {
     docker run --interactive --tty                              \
+           -v /tmp/.X11-unix:/tmp/.X11-unix                     \
+           --env DISPLAY=unix$DISPLAY                           \
+           --volume $PWD:/home/developer                        \
+           --name netbeans                                      \
+           fgrehm/netbeans:v8.0.1                               \
+                                                             || \
+    docker start netbeans
+}
+netcat() {
+    docker run --rm --interactive --tty                         \
         --net host                                              \
+        --name netcat                                           \
         jess/netcat "$@"
 }
 alias nc=netcat
@@ -39,6 +61,7 @@ alias nc=netcat
 nmap() {
     docker run --rm --interactive --tty                         \
         --net host                                              \
+        --name nmap                                             \
         jess/nmap "$@"
 }
 
@@ -52,7 +75,7 @@ steam() {
         --volume /etc/machine-id:/etc/machine-id                \
         --name steam                                            \
         sassmann/ubuntu-steam                                   \
-                                                2&>/dev/null || \
+                                                             || \
     docker start steam
 }
 
@@ -73,28 +96,28 @@ torproxy() {
         --publish 127.0.1.1:9050:9050                           \
         --name torproxy                                         \
         jess/tor-proxy                                          \
-                                                2&>/dev/null || \
+                                                             || \
     docker stop torproxy; docker start torproxy
 }
 
 tor-browser() {
-    docker run --detach                                         \
+    docker run --detach --rm                                    \
         --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
         --env DISPLAY=unix$DISPLAY                              \
         --volume /dev/snd:/dev/snd                              \
         --volume /dev/shm:/dev/shm                              \
         --volume /etc/machine-id:/etc/machine-id:ro             \
+        --name tor-browser                                      \
         jess/tor-browser
 }
 alias tor=tor-browser
-
 
 visualstudio() {
     docker run --detach --rm                                    \
         --volume /etc/localtime:/etc/localtime:ro               \
         --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
         --env DISPLAY=unix$DISPLAY                              \
-        --volume $PWD:/home/user/code                           \
+        --volume $PWD:/home/user                                \
         --name visualstudio                                     \
         jess/vscode
 
