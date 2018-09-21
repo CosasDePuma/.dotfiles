@@ -90,10 +90,6 @@ torproxy() {
         sudo mv ~/torrc.default /etc/tor/torrc.default
     fi
 
-    if [ ! -f /etc/tor/tor-iptables.sh ]; then
-        sudo curl -o /etc/tor/tor-iptables.sh https://raw.githubusercontent.com/CosasDePuma/Setup/master/tor/tor-iptables.sh
-    fi    
-
     docker run --detach                                         \
         --restart always                                        \
         --volume /etc/localtime:/etc/localtime:ro               \
@@ -104,7 +100,15 @@ torproxy() {
                                                              || \
     docker stop torproxy; docker start torproxy
     
+: << 'COMMENT'
+    if [ ! -f /etc/tor/tor-iptables.sh ]; then
+        sudo curl -o /etc/tor/tor-iptables.sh https://raw.githubusercontent.com/CosasDePuma/Setup/master/tor/tor-iptables.sh
+    fi
+
     sudo bash /etc/tor/tor-iptables.sh
+COMMENT
+    
+    # FIXME: Tor IPTables
 }
 
 tor-browser() {
