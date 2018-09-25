@@ -18,6 +18,16 @@ docker_purge() {
     docker rmi -f ${images[@]}
 }
 
+#  -------------------------
+# |      MY CONTAINERS      |
+#  -------------------------
+
+searchsploit() {
+    docker run --rm --tty                                       \
+        --volume $PWD:/Downloads                                \
+        --name searchsploit                                     \
+        cosasdepuma/searchsploit "$@"
+}
 
 #  -------------------------
 # |  THIRD-PART CONTAINERS  |
@@ -79,6 +89,14 @@ steam() {
     docker start steam
 }
 
+swipl(){
+    docker run --interactive --tty --rm                         \
+        --volume $PWD:/pl                                       \
+        --name prolog                                           \
+        swipl                                                   
+}
+alias prolog=swipl
+
 torproxy() {
     if [ ! -d /etc/tor/ ]; then
         sudo mkdir -p /etc/tor
@@ -128,9 +146,10 @@ visualstudio() {
         --volume /etc/localtime:/etc/localtime:ro               \
         --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
         --env DISPLAY=unix$DISPLAY                              \
-        --volume $PWD:/home/user                                \
+        --volume $PWD:/home/user/code                           \
+        --workdir /home/user/code                               \
         --name visualstudio                                     \
-        jess/vscode
+        jess/vscode $@
 
     # TODO: Extensions
 }
