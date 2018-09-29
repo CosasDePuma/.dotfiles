@@ -33,6 +33,14 @@ searchsploit() {
 # |  THIRD-PART CONTAINERS  |
 #  -------------------------
 
+metasploit-framework() {
+    docker run --interactive --tty --rm                         \
+    --volume $HOME/.msf4/modules:/modules                       \
+    --name metasploit                                           \
+    metasploitframework/metasploit-framework
+}
+alias msfconsole=metasploit-framework
+
 eclipse() {
     docker run --interactive --tty                              \
         --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
@@ -93,7 +101,7 @@ swipl(){
     docker run --interactive --tty --rm                         \
         --volume $PWD:/pl                                       \
         --name prolog                                           \
-        swipl                                                   
+        swipl
 }
 alias prolog=swipl
 
@@ -117,7 +125,7 @@ torproxy() {
         jess/tor-proxy                                          \
                                                              || \
     docker stop torproxy; docker start torproxy
-    
+
 : << 'COMMENT'
     if [ ! -f /etc/tor/tor-iptables.sh ]; then
         sudo curl -o /etc/tor/tor-iptables.sh https://raw.githubusercontent.com/CosasDePuma/Setup/master/tor/tor-iptables.sh
@@ -125,7 +133,7 @@ torproxy() {
 
     sudo bash /etc/tor/tor-iptables.sh
 COMMENT
-    
+
     # FIXME: Tor IPTables
 }
 
