@@ -58,6 +58,20 @@ hollywood() {
         jess/hollywood
 }
 
+keepass2() {
+    xhost +
+    docker run --interactive --tty --rm                         \
+        --volume $HOME/DB.kdbx:/root/DB.kdbx                    \
+        --volume $HOME/DB.key:/root/DB.key                      \
+        --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
+        --env DISPLAY=unix$DISPLAY                              \
+        --name keepass2                                         \
+        jess/keepass2                                           \
+            /root/DB.kdbx/passwd.kdbx --keyfile:/root/DB.key
+    xhost -
+}
+alias keepass=keepass2
+
 netbeans() {
     docker run --interactive --tty                              \
            --volume /tmp/.X11-unix:/tmp/.X11-unix               \
@@ -162,3 +176,16 @@ visualstudio() {
     # TODO: Extensions
 }
 alias code=visualstudio
+
+wireshark(){
+    docker run --detach --rm                                    \
+        --volume "$PWD:/files"                                  \
+        --volume /etc/localtime:/etc/localtime:ro               \
+        --volume /tmp/.X11-unix:/tmp/.X11-unix                  \
+        --env "DISPLAY=unix${DISPLAY}"                          \
+        --cap-add NET_RAW                                       \
+        --cap-add NET_ADMIN                                     \
+        --net host                                              \
+        --name wireshark                                        \
+        jess/wireshark
+}
