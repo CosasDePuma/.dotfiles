@@ -1,0 +1,19 @@
+sudo: required
+language: bash
+
+services:
+  - docker
+
+before_install:
+  source linux/.dockerfunc
+  chmod +x linux/kubernetes-setup.sh
+
+script:
+  ./linux/kubernetes-setup.sh
+
+  torproxy
+  nc -h
+  netcat -h
+  nmap localhost
+  searchsploit travis
+  docker_purge
