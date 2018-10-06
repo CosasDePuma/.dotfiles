@@ -1,18 +1,16 @@
-" Plugins (vim-plug required)
+" AutoInstallation: Vim-Plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Plugins
 call plug#begin('$HOME/.vim/plugged')
-Plug 'junegunn/goyo.vim'
-Plug 'neutaaaaan/iosvkem'
-" Plug 'tyrannicaltoucan/vim-deep-space'
+Plug 'itchyny/lightline.vim'
+Plug 'joshdick/onedark.vim'
 call plug#end()
 
-" Themes
-" colorscheme Iosvkem
-set background=dark
-set termguicolors
-
-" Indentation and tabs
-set expandtab
-set autoindent
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4 
+" Theme
+syntax on
+colorscheme onedark
