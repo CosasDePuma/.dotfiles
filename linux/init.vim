@@ -30,3 +30,7 @@ if (empty($TMUX))
     set termguicolors
   endif
 endif
+
+let g:lightline = {
+  'colorscheme': 'onedark',
+}
