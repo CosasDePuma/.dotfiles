@@ -13,4 +13,4 @@ call plug#end()
 
 " Theme
 syntax on
-colorscheme onedark
+" colorscheme onedark
