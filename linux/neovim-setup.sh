@@ -18,11 +18,11 @@ if [ "$(id -u)" != "0" ]; then
  echo -e "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: You must be root${NO_COLOR}"
  exit
 else
-  echo -ne "Starting.\r"
+  echo -n "Starting."
   sleep 0.5
-  echo -ne "Starting..\r"
+  echo -n "."
   sleep 0.5
-  echo -ne "Starting...\r"
+  echo -n "."
   sleep 0.5
   CHOWN_USER=$SUDO_USER || CHOWN_USER=$USER
 fi
@@ -77,7 +77,7 @@ if ! which nvim &>/dev/null; then
   fi
 fi
 
-if [ ! -f $HOME/.vimrc ]; then
+if [ ! -f $HOME/.config/nvim/init.vim ]; then
   if dialog --title "NeoVim Setup" --yesno "\nWould you like to download custom configuration files?" 7 31; then
     dialog --title "NeoVim Setup" --infobox "\nDownloading init.vim..." 5 27
     # Create the directory
