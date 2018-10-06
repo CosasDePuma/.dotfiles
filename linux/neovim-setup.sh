@@ -85,7 +85,7 @@ if [ ! -f $HOME/.vimrc ]; then
       err 83
     fi
     # Download custom init.vim
-    if ! curl -fsLo $HOME/.config/nvim/init.vim https://raw.githubusercontent.com/CosasDePuma/Setup/master/linux/init.vim; then
+    if ! curl -fsLo $HOME/.config/nvim/init.vim https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/init.vim; then
       err 87
     fi
     # Load the plugins
