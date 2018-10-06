@@ -3,7 +3,7 @@
 # >> COLORS
 # --------------
 
-if ! lsb_release -a 2>/dev/null | grep -sq elementary; then
+if which tput > /dev/null 2>&1 && [[ $(tput -T$TERM colors) -ge 8 ]]; then
   BOLD="\033[1m"
   NO_COLOR="\033[0m"
   COLOR_WHITE="\033[38;5;15m"
@@ -15,7 +15,7 @@ fi
 # --------------------------
 
 if [ "$(id -u)" != "0" ]; then
- echo "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: You must be root${NO_COLOR}"
+ echo -e "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: You must be root${NO_COLOR}"
  exit
 else
   echo -ne "Starting.\r"
@@ -33,7 +33,7 @@ fi
 
 err() {
   clear
-	echo "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: Bad return code in line $1${NO_COLOR}"
+  echo -e "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: Bad return code in line $1${NO_COLOR}"
   exit
 }
 
