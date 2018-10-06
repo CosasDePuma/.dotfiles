@@ -18,11 +18,11 @@ if [ "$(id -u)" != "0" ]; then
  echo -e "${BOLD}${COLOR_WHITE}${BACKGROUND_RED}ERROR: You must be root${NO_COLOR}"
  exit
 else
-  echo -ne "Starting.\r"
+  echo -n "Starting."
   sleep 0.5
-  echo -ne "Starting..\r"
+  echo -n "."
   sleep 0.5
-  echo -ne "Starting...\r"
+  echo -n "."
   sleep 0.5
 fi
 
