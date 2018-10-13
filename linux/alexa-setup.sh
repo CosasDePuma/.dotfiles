@@ -63,6 +63,7 @@ if ! which npm &>/dev/null; then
     if ! apt install -y nodejs npm &>/dev/null; then
       err 63
     fi
+    ln -s /usr/bin/nodejs /usr/bin/node
     dialog --title "Alexa Setup" --msgbox "\nNodeJS and NPM successfully installed!" 7 42
   fi
 fi
@@ -72,19 +73,19 @@ if ! which atom &>/dev/null; then
     dialog --title "Alexa Setup" --infobox "\nInstalling Atom..." 5 22
     # Download the latest package of Atom
     if ! curl -LO https://atom.io/download/deb &>/dev/null; then
-      err 74
+      err 75
     fi
     # Install the deb package
     if ! dpkg -i deb; then
-      err 78
+      err 79
     fi
     # Install the dependencies
     if ! apt install -y -f; then
-      err 82
+      err 83
     fi
     # Remove the deb package
     if ! rm -f deb &>/dev/null; then
-      err 86
+      err 87
     fi
     dialog --title "Alexa Setup" --msgbox "\nAtom successfully installed!" 7 32
   fi
@@ -94,7 +95,7 @@ if [ ! -d ${HOME}/.atom/packages/platformio-ide-terminal ]; then
   if dialog --title "Alexa Setup" --yesno "\nWould you like to install an Atom terminal?" 7 47; then
     dialog --title "Alexa Setup" --infobox "\nInstalling platformio-ide-terminal package..." 5 49
     if ! apm install platformio-ide-terminal &>/dev/null; then
-      err 96
+      err 97
     fi
     dialog --title "Alexa Setup" --msgbox "\nPlatformio-IDE-Terminal successfully installed!" 7 51
   fi
@@ -104,21 +105,21 @@ if ! which aws &>/dev/null; then
   if dialog --title "Alexa Setup" --yesno "\nWould you like to install AWS Cli?" 7 38; then
     dialog --title "Alexa Setup" --infobox "\nInstalling AWS Cli..." 5 25
     if ! apt install -y awscli &>/dev/null; then
-      err 106
+      err 107
     fi
     dialog --title "Alexa Setup" --msgbox "\nAWS Cli successfully installed!" 7 35
   fi
 fi
 
 if ! which npm &>/dev/null; then
-  err 113
+  err 114
 fi
 
 if ! which ask &>/dev/null; then
   if dialog --title "Alexa Setup" --yesno "\nWould you like to the Alexa Skill Kit?" 7 42; then
     dialog --title "Alexa Setup" --infobox "\nInstalling the Alexa Skill Kit..." 5 37
     if ! npm install --global ask-cli &>/dev/null; then
-      err 121
+      err 122
     fi
     dialog --title "Alexa Setup" --msgbox "\nAlexa Skill Kit successfully installed!" 7 43
   fi
