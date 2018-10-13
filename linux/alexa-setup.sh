@@ -60,8 +60,9 @@ fi
 if ! which npm &>/dev/null; then
   if dialog --title "Alexa Setup" --yesno "\nWould you like to install NodeJS and NPM?" 7 45; then
     dialog --title "Alexa Setup" --infobox "\nInstalling NodeJS and NPM..." 5 32
-    if ! apt install -y nodejs npm &>/dev/null; then
-      err 63
+    ( curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - ) &>/dev/null
+    if ! sudo apt-get install -y nodejs &>/dev/null; then
+      err 64
     fi
     ln -s /usr/bin/nodejs /usr/bin/node
     dialog --title "Alexa Setup" --msgbox "\nNodeJS and NPM successfully installed!" 7 42
@@ -73,19 +74,19 @@ if ! which atom &>/dev/null; then
     dialog --title "Alexa Setup" --infobox "\nInstalling Atom..." 5 22
     # Download the latest package of Atom
     if ! curl -LO https://atom.io/download/deb &>/dev/null; then
-      err 75
+      err 76
     fi
     # Install the deb package
     if ! dpkg -i deb; then
-      err 79
+      err 80
     fi
     # Install the dependencies
     if ! apt install -y -f; then
-      err 83
+      err 84
     fi
     # Remove the deb package
     if ! rm -f deb &>/dev/null; then
-      err 87
+      err 88
     fi
     dialog --title "Alexa Setup" --msgbox "\nAtom successfully installed!" 7 32
   fi
@@ -95,7 +96,7 @@ if [ ! -d ${HOME}/.atom/packages/platformio-ide-terminal ]; then
   if dialog --title "Alexa Setup" --yesno "\nWould you like to install an Atom terminal?" 7 47; then
     dialog --title "Alexa Setup" --infobox "\nInstalling platformio-ide-terminal package..." 5 49
     if ! apm install platformio-ide-terminal &>/dev/null; then
-      err 97
+      err 98
     fi
     dialog --title "Alexa Setup" --msgbox "\nPlatformio-IDE-Terminal successfully installed!" 7 51
   fi
@@ -105,14 +106,14 @@ if ! which aws &>/dev/null; then
   if dialog --title "Alexa Setup" --yesno "\nWould you like to install AWS Cli?" 7 38; then
     dialog --title "Alexa Setup" --infobox "\nInstalling AWS Cli..." 5 25
     if ! apt install -y awscli &>/dev/null; then
-      err 107
+      err 108
     fi
     dialog --title "Alexa Setup" --msgbox "\nAWS Cli successfully installed!" 7 35
   fi
 fi
 
 if ! which npm &>/dev/null; then
-  err 114
+  err 115
 fi
 
 if ! which ask &>/dev/null; then
