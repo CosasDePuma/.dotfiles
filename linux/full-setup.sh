@@ -15,7 +15,13 @@ colorsuccess="\e[1;92m"
 dist=$(lsb_release -cs)
 
 [ "$dist" = "loki" ] && dist="xenial"
-[ "$SUDO_USER" = "" ] && sudo="sudo" || sudo=""
+if [ "$SUDO_USER" = "" ]; then
+  user=$USER
+  sudo="sudo"
+else
+  sudo=""
+  user=$SUDO_USER
+fi
 
 # -----------------------------------------------------------------
 
@@ -38,25 +44,29 @@ success() {
 
 # -----------------------------------------------------------------
 
-check() {
-  case $1 in
-    neovim)
-      set -- nvim
-      ;;
-    *)
-      ;;
-  esac
-  if ! dpkg -l $1 &>/dev/null; then
-    error "The program" $1 "cannot be installed"
-  else
-    success $1 "installed"
-  fi
-}
-
 init_sudo() {
   info "Checking" sudo
   $sudo echo &>/dev/null
 }
+
+check() {
+  case $1 in
+    ask-cli)  set -- ask $2;;
+    awscli)   set -- aws $2;;
+  esac
+  if [ "$2" = "module" ]; then
+    if ! which $1 &>/dev/null; then
+      error "The program" $1 "cannot be installed"
+    fi
+  else
+    if ! dpkg -l $1 &>/dev/null; then
+      error "The program" $1 "cannot be installed."
+    fi
+  fi
+  success $1 "installed"
+}
+
+# -----------------------------------------------------------------
 
 purge() {
   warning "Removing" $1
@@ -74,6 +84,18 @@ install() {
   check $1
 }
 
+check_deps() {
+  if ! dpkg -l $1 &>/dev/null; then
+    error "The program" $1 "is required to be installed"
+  fi
+}
+
+install_deps() {
+  for dependency in $@; do
+    install $dependency
+  done
+}
+
 # -----------------------------------------------------------------
 
 init_sudo
@@ -84,29 +106,37 @@ for dependency in ${dependencies[@]}; do
   if ! dpkg -l $dependency &>/dev/null; then
     install $dependency
   fi
+  [ $dependency = dialog -a ! -f $HOME/.dialogrc ] && curl -fsSL -o $HOME/.dialogrc "https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/.dialogrc"
 done
 
 # -----------------------------------------------------------------
 
-dialog --clear --help-button              \
-  --backtitle "CosasDePuma Setup Script"  \
-  --title "[ M A I N - M E N U ]"         \
-  --checklist                             \
+dialog --clear --help-button                                        \
+  --backtitle "CosasDePuma Setup Script"                            \
+  --title "[ M A I N - M E N U ]"                                   \
+  --checklist                                                       \
 "\n
 You can use the UP/DOWN arrow keys to move between the different options.
 You can also press the first letter of the name to jump directly.
 Press SPACE to mark/unmark an option.
-"                                         \
-  15 70 5                                 \
-  Update  "Update your repositories" on   \
-  Atom    "A hackable text editor for the 21st Century" on      \
-  Docker  "Build, Ship and Deploy" on     \
-  Neovim  "Vim-fork focused on extensibility and usability" on  \
-  VSCode  "Code editing. Redefined" off   \
+"                                                                   \
+  20 70 9                                                           \
+  Update  "Update your repositories" on                             \
+  Atom    "A hackable text editor for the 21st Century" on          \
+  ASKCli  "A tool for you to manage your Alexa skills" off          \
+  AWSCli  "Universal Command Line Interface for AWS" off            \
+  Docker  "Build, Ship and Deploy" on                               \
+  Golang  "The Go programming language" off                         \
+  Haskell "An advanced, purely functional programming language" off \
+  Neovim  "Vim-fork focused on extensibility and usability" on      \
+  NodeJS  "Entorno de ejecución para JavaScript" on                 \
+  VSCode  "Code editing. Redefined" off                             \
   2>"${tmp}"
 options=$(<"${tmp}")
 
 clear && echo
+
+# -----------------------------------------------------------------
 
 for option in ${options[@]}; do
   option=$(echo $option | tr [:upper:] [:lower:])
@@ -120,6 +150,19 @@ for option in ${options[@]}; do
       update
       install $option
       ;;
+    askcli)
+      option=ask-cli
+      check_deps npm
+      info "Installing" $option
+      $sudo npm install --global $option &>/dev/null
+      check $option "module"
+      ;;
+    awscli)
+      install_deps python-pip
+      info "Installing" $option
+      $sudo pip install $option &>/dev/null
+      check $option "module"
+      ;;
     docker)
       purge docker
       purge docker.io
@@ -128,11 +171,30 @@ for option in ${options[@]}; do
       $sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $dist stable"
       update
       install $option-ce
+      $sudo groupadd docker
+      $sudo usermod -aG docker $user
+      ;;
+    golang)
+      $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
+      update
+      install $option-go
+      ;;
+    haskell)
+      install $option-platform
       ;;
     neovim)
       $sudo add-apt-repository -y "ppa:neovim-ppa/stable" &>/dev/null
       update
       install $option
+      ;;
+    nodejs)
+      info "Adding" $option "repository"
+      curl -fsSL https://deb.nodesource.com/setup_11.x | $sudo bash - &>/dev/null
+      install $option
+      option=npm
+      install $option
+      info "Upgrading" $option
+      $sudo $option install --global $option@latest &>/dev/null && success $option "updgraded"
       ;;
     vscode)
       curl -fsSL "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor > microsoft.gpg
@@ -147,7 +209,7 @@ for option in ${options[@]}; do
   esac
 done
 
-echo && exit 0
+clear && success setup "completed!"
 
 # FIXME:
 # - Update & Atom can't update twice
