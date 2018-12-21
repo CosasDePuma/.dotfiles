@@ -95,7 +95,7 @@ check_deps() {
 
 install_deps() {
   for dependency in $@; do
-    install $dependency
+    install_ $dependency
   done
 }
 
