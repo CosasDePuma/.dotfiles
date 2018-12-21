@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  install_all:
+    machine:
+      image: circleci/classic:latest
+    steps:
+      # Clone the Github Project
+      - checkout
+      # Install all programs
+      - run:
+          name: Installing all the programs
+          command: sudo bash linux/full-setup.sh --all
+
+# ===============================================
+
+workflows:
+  version: 2
+  builds:
+    jobs:
+      - install_all
