@@ -14,6 +14,9 @@ colorsuccess="\e[1;92m"
 
 dist=$(lsb_release -cs)
 
+available_programs=( update atom askcli awscli ionic docker golang
+  haskell texmaker neovim vscode wxmaxima )
+
 [ "$dist" = "loki" ] && dist="xenial"
 if [ "$SUDO_USER" = "" ]; then
   user=$USER
@@ -78,7 +81,7 @@ update() {
   $sudo $aptu && success repositories "updated"
 }
 
-install() {
+install_() {
   info "Installing" $1
   $sudo $apti $1 &>/dev/null
   check $1
@@ -98,6 +101,110 @@ install_deps() {
 
 # -----------------------------------------------------------------
 
+setup() {
+  for option in ${options[@]}; do
+    option=$(echo $option | tr [:upper:] [:lower:])
+    case $option in
+      update)
+        update
+        ;;
+      atom)
+        (curl -fsSL "https://packagecloud.io/AtomEditor/atom/gpgkey" | $sudo apt-key add -) &>/dev/null
+        $sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+        update
+        install_ $option
+        ;;
+      askcli)
+        option=ask-cli
+        check_deps npm
+        info "Installing" $option
+        $sudo npm install --global $option &>/dev/null
+        check $option "module"
+        ;;
+      awscli)
+        install_deps python-pip
+        info "Installing" $option
+        $sudo pip install $option &>/dev/null
+        check $option "module"
+        ;;
+      docker)
+        purge docker
+        purge docker.io
+        purge docker-engine
+        curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | $sudo apt-key add - &>/dev/null
+        $sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $dist stable"
+        update
+        install_ $option-ce
+        $sudo groupadd docker &>/dev/null
+        $sudo usermod -aG docker $user
+        ;;
+      ionic)
+        check_deps npm
+        info "Installing" cordova
+        $sudo npm install --global cordova &>/dev/null
+        check cordova "module"
+        info "Installing" $option
+        $sudo npm install --global $option &>/dev/null
+        check $option "module"
+        ;;
+      golang)
+        $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
+        update
+        install_ $option-go
+        ;;
+      haskell)
+        install_ $option-platform
+        ;;
+      neovim)
+        $sudo add-apt-repository -y "ppa:neovim-ppa/stable" &>/dev/null
+        update
+        install_ $option
+        ;;
+      nodejs)
+        info "Adding" $option "repository"
+        curl -fsSL https://deb.nodesource.com/setup_11.x | $sudo bash - &>/dev/null
+        install_ $option
+        option=npm
+        install_ $option
+        info "Upgrading" $option
+        $sudo $option install --global $option@latest &>/dev/null && success $option "updgraded"
+        ;;
+      vscode)
+        curl -fsSL "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor > microsoft.gpg
+        $sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+        $sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+        update
+        install_ code
+        ;;
+      *)
+        install_ $option
+        ;;
+    esac
+  done
+}
+
+# -----------------------------------------------------------------
+
+check_args () {
+  [ $# -eq 0 ] && return 1
+  options=''
+  while [ $# -gt 0 ]; do
+    if [ "$1" = "-a" -o "$1" = "--all" ]; then
+      options=$available_programs
+      return 0
+    else
+      if [[ " ${available_programs[@]} " =~ " $1 " ]]; then
+        options="$options $1"
+      else
+        error "The program" $1 "is not available"
+      fi
+    fi
+    shift
+  done
+}
+
+# -----------------------------------------------------------------
+
 init_sudo
 
 dependencies=( git curl wget dialog ca-certificates apt-transport-https software-properties-common )
@@ -111,6 +218,7 @@ done
 
 # -----------------------------------------------------------------
 
+check_args $@ ||                                                      \
 dialog --clear --help-button                                          \
   --backtitle "CosasDePuma Setup Script"                              \
   --title "[ M A I N - M E N U ]"                                     \
@@ -132,97 +240,23 @@ Press SPACE to mark/unmark an option.
   TeXMaker  "Cross-platform open-source LaTeX editor" off             \
   Neovim    "Vim-fork focused on extensibility and usability" on      \
   NodeJS    "Entorno de ejecución para JavaScript" on                 \
-  VSCode    "Code editing. Redefined" off                             \
+  VSCode    "Code  editing. Redefined" off                            \
   wxMaxima  "Document based interface for Maxima" off                 \
   2>"${tmp}"
-options=$(<"${tmp}")
+[ "$options" = '' ] && options=$(<"${tmp}")
 
-clear && echo
+clear
+echo
+[ "$(echo ${options[0]} | cut -d " " -f1)" = "HELP" ] && exit 2
 
-# -----------------------------------------------------------------
+if setup; then
+  clear
+  success setup "completed!"
+fi
 
-for option in ${options[@]}; do
-  option=$(echo $option | tr [:upper:] [:lower:])
-  case $option in
-    update)
-      update
-      ;;
-    atom)
-      (curl -fsSL "https://packagecloud.io/AtomEditor/atom/gpgkey" | $sudo apt-key add -) &>/dev/null
-      $sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
-      update
-      install $option
-      ;;
-    askcli)
-      option=ask-cli
-      check_deps npm
-      info "Installing" $option
-      $sudo npm install --global $option &>/dev/null
-      check $option "module"
-      ;;
-    awscli)
-      install_deps python-pip
-      info "Installing" $option
-      $sudo pip install $option &>/dev/null
-      check $option "module"
-      ;;
-    docker)
-      purge docker
-      purge docker.io
-      purge docker-engine
-      curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | $sudo apt-key add - &>/dev/null
-      $sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $dist stable"
-      update
-      install $option-ce
-      $sudo groupadd docker
-      $sudo usermod -aG docker $user
-      ;;
-    ionic)
-      check_deps npm
-      info "Installing" cordova
-      $sudo npm install --global cordova &>/dev/null
-      check cordova "module"
-      info "Installing" $option
-      $sudo npm install --global $option &>/dev/null
-      check $option "module"
-      ;;
-    golang)
-      $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
-      update
-      install $option-go
-      ;;
-    haskell)
-      install $option-platform
-      ;;
-    neovim)
-      $sudo add-apt-repository -y "ppa:neovim-ppa/stable" &>/dev/null
-      update
-      install $option
-      ;;
-    nodejs)
-      info "Adding" $option "repository"
-      curl -fsSL https://deb.nodesource.com/setup_11.x | $sudo bash - &>/dev/null
-      install $option
-      option=npm
-      install $option
-      info "Upgrading" $option
-      $sudo $option install --global $option@latest &>/dev/null && success $option "updgraded"
-      ;;
-    vscode)
-      curl -fsSL "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor > microsoft.gpg
-      $sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-      $sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-      update
-      install code
-      ;;
-    *)
-      install $option
-      ;;
-  esac
-done
-
-clear && success setup "completed!"
-
+# TODO:
+# - Create "man" page
+# - Run "man" page in help
 # FIXME:
 # - Update & Atom can't update twice
 # - Update & Docker can't update twice
