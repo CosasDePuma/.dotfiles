@@ -14,7 +14,7 @@ colorsuccess="\e[1;92m"
 
 dist=$(lsb_release -cs)
 
-available_programs=( update atom askcli awscli ionic docker golang
+available_programs=( update nodejs atom askcli awscli ionic docker golang
   haskell texmaker neovim vscode wxmaxima )
 
 [ "$dist" = "loki" ] && dist="xenial"
