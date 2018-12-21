@@ -186,21 +186,18 @@ setup() {
 # -----------------------------------------------------------------
 
 check_args () {
-  [ $# -eq 0 ] && return 1
   options=''
-  while [ $# -gt 0 ]; do
-    if [ "$1" = "-a" -o "$1" = "--all" ]; then
-      options=$available_programs
-      return 0
-    else
-      if [[ " ${available_programs[@]} " =~ " $1 " ]]; then
-        options="$options $1"
-      else
-        error "The program" $1 "is not available"
-      fi
-    fi
-    shift
-  done
+  [ $# -eq 0 ] && return 1
+  if [[ " $@ " =~ " -a " ]]; then
+    options=${available_programs[@]}
+  elif [[ " $@ " =~ " --all " ]]; then
+    options=${available_programs[@]}
+  else
+    for program in $@; do
+      [[ " ${available_programs[@]} " =~ " $program " ]] || error "The program" $program "is not available"
+      options="$options $program"
+    done
+  fi
 }
 
 # -----------------------------------------------------------------
