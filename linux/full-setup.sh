@@ -111,26 +111,29 @@ done
 
 # -----------------------------------------------------------------
 
-dialog --clear --help-button                                        \
-  --backtitle "CosasDePuma Setup Script"                            \
-  --title "[ M A I N - M E N U ]"                                   \
-  --checklist                                                       \
+dialog --clear --help-button                                          \
+  --backtitle "CosasDePuma Setup Script"                              \
+  --title "[ M A I N - M E N U ]"                                     \
+  --checklist                                                         \
 "\n
 You can use the UP/DOWN arrow keys to move between the different options.
 You can also press the first letter of the name to jump directly.
 Press SPACE to mark/unmark an option.
-"                                                                   \
-  20 70 9                                                           \
-  Update  "Update your repositories" on                             \
-  Atom    "A hackable text editor for the 21st Century" on          \
-  ASKCli  "A tool for you to manage your Alexa skills" off          \
-  AWSCli  "Universal Command Line Interface for AWS" off            \
-  Docker  "Build, Ship and Deploy" on                               \
-  Golang  "The Go programming language" off                         \
-  Haskell "An advanced, purely functional programming language" off \
-  Neovim  "Vim-fork focused on extensibility and usability" on      \
-  NodeJS  "Entorno de ejecución para JavaScript" on                 \
-  VSCode  "Code editing. Redefined" off                             \
+"                                                                     \
+  20 70 10                                                            \
+  Update    "Update your repositories" on                             \
+  Atom      "A hackable text editor for the 21st Century" on          \
+  ASKCli    "A tool for you to manage your Alexa skills" off          \
+  AWSCli    "Universal Command Line Interface for AWS" off            \
+  Ionic     "Build apps in one codebase, for any platform." off       \
+  Docker    "Build, Ship and Deploy" on                               \
+  Golang    "The Go programming language" off                         \
+  Haskell   "An advanced, purely functional programming language" off \
+  TeXMaker  "Cross-platform open-source LaTeX editor" off             \
+  Neovim    "Vim-fork focused on extensibility and usability" on      \
+  NodeJS    "Entorno de ejecución para JavaScript" on                 \
+  VSCode    "Code editing. Redefined" off                             \
+  wxMaxima  "Document based interface for Maxima" off                 \
   2>"${tmp}"
 options=$(<"${tmp}")
 
@@ -173,6 +176,15 @@ for option in ${options[@]}; do
       install $option-ce
       $sudo groupadd docker
       $sudo usermod -aG docker $user
+      ;;
+    ionic)
+      check_deps npm
+      info "Installing" cordova
+      $sudo npm install --global cordova &>/dev/null
+      check cordova "module"
+      info "Installing" $option
+      $sudo npm install --global $option &>/dev/null
+      check $option "module"
       ;;
     golang)
       $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
