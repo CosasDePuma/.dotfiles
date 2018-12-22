@@ -12,18 +12,24 @@ colorerror="\e[1;91m"
 colorwarning="\e[1;33m"
 colorsuccess="\e[1;92m"
 
+os=$(lsb_release -is)
 dist=$(lsb_release -cs)
+os=$(echo $os | tr [:upper:] [:lower:])
+dist=$(echo $dist | tr [:upper:] [:lower:])
 
 available_programs=( update nodejs atom askcli awscli ionic docker golang
   haskell texmaker neovim vscode wxmaxima )
 
-[ "$dist" = "loki" ] && dist="xenial"
-if [ "$SUDO_USER" = "" ]; then
+[ "$os" = "elementary" -o "$os" = "" ] && os="ubuntu"
+[ "$dist" = "loki" -o "$dist" = "" ] && dist="xenial"
+
+
+if [ $EUID -eq 0 ]; then
+  sudo=""
+  [ "$SUDO_USER" = "" ] && user=$USER || user=$SUDO_USER
+else
   user=$USER
   sudo="sudo"
-else
-  sudo=""
-  user=$SUDO_USER
 fi
 
 # -----------------------------------------------------------------
@@ -131,8 +137,8 @@ setup() {
         purge docker
         purge docker.io
         purge docker-engine
-        curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | $sudo apt-key add - &>/dev/null
-        $sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $dist stable"
+        curl -fsSL "https://download.docker.com/linux/$os/gpg" | $sudo apt-key add - &>/dev/null
+        $sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/$os $dist stable"
         update
         install_ $option-ce
         $sudo groupadd docker &>/dev/null
@@ -148,8 +154,10 @@ setup() {
         check $option "module"
         ;;
       golang)
-        $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
-        update
+        if [ "$os" = "ubuntu" ]; then
+          $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
+          update
+        fi
         install_ $option-go
         ;;
       haskell)
@@ -163,6 +171,7 @@ setup() {
       nodejs)
         info "Adding" $option "repository"
         curl -fsSL https://deb.nodesource.com/setup_11.x | $sudo bash - &>/dev/null
+        update
         install_ $option
         option=npm
         install_ $option
@@ -204,14 +213,19 @@ check_args () {
 
 init_sudo
 
-dependencies=( git curl wget dialog ca-certificates apt-transport-https software-properties-common )
+dependencies=( git curl wget dialog ca-certificates apt-transport-https software-properties-common gnupg2 )
+updated="false"
 for dependency in ${dependencies[@]}; do
   info "Checking" $dependency
-  if ! dpkg -l $dependency &>/dev/null; then
-    install $dependency
+  if ! (dpkg -l $dependency | grep "<none>") &>/dev/null; then
+    if [ "$updated" = "false" ]; then
+      update
+      updated="true"
+    fi
+    install_ $dependency
   fi
-  [ $dependency = dialog -a ! -f $HOME/.dialogrc ] && curl -fsSL -o $HOME/.dialogrc "https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/.dialogrc"
 done
+[ $dependency = dialog -a ! -f $HOME/.dialogrc ] && curl -fsSL -o $HOME/.dialogrc "https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/.dialogrc"
 
 # -----------------------------------------------------------------
 
@@ -255,7 +269,8 @@ fi
 # - Create "man" page
 # - Run "man" page in help
 # FIXME:
-# - Update & Atom can't update twice
-# - Update & Docker can't update twice
+# - Update & Atom can't update twice (low priority)
+# - Update & Docker can't update twice (low priority)
+# - Better dependency check
 
 # Bash colors: https://misc.flogisoft.com/bash/tip_colors_and_formatting
