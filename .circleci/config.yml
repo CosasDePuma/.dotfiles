@@ -10,6 +10,10 @@ jobs:
       - run:
           name: Installing all the programs
           command: bash linux/program-bundle.sh --all
+      # Configuring atom packages
+      - run:
+          name: Configuring Atom packages
+          command: bash linux/atom-packages.sh --all
 
 # ===============================================
 
