@@ -124,7 +124,7 @@ setup() {
         option=ask-cli
         check_deps npm
         info "Installing" $option
-        $sudo npm install --global $option #&>/dev/null
+        $sudo npm install --global $option &>/dev/null
         check $option "module"
         ;;
       awscli)
