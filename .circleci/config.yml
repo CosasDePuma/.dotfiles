@@ -1,15 +1,15 @@
 version: 2
 jobs:
-  ubuntu:
+  debian:
     docker:
-      - image: ubuntu
+      - image: cosasdepuma/circleci:debian
     steps:
       # Clone the Github Project
       - checkout
       # Install all programs
       - run:
           name: Installing all the programs
-          command: sudo bash linux/full-setup.sh --all
+          command: bash linux/full-setup.sh --all
 
 # ===============================================
 
@@ -17,4 +17,4 @@ workflows:
   version: 2
   builds:
     jobs:
-      - ubuntu
+      - debian
