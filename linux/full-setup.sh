@@ -1,10 +1,17 @@
 #! /bin/bash
 
-tmp=/tmp/setup.sh.$$
+# -----------------------------------------------------------------
+#                         V A R I A B L E S
+# -----------------------------------------------------------------
 
-aptp="apt-get purge -qq -y"
-aptu="apt-get update -qq -y"
-apti="apt-get install -qq -y"
+dependencies=( git curl lsb-release wget dialog ca-certificates
+  apt-transport-https software-properties-common gnupg2 )
+available_programs=( nodejs atom askcli awscli docker golang
+  haskell ionic neovim texmaker vscode wxmaxima )
+
+# -----------------------------------------------------------------
+#                            C O L O R S
+# -----------------------------------------------------------------
 
 nocolor="\e[0;0m"
 colorinfo="\e[1;94m"
@@ -12,26 +19,8 @@ colorerror="\e[1;91m"
 colorwarning="\e[1;33m"
 colorsuccess="\e[1;92m"
 
-os=$(lsb_release -is)
-dist=$(lsb_release -cs)
-os=$(echo $os | tr [:upper:] [:lower:])
-dist=$(echo $dist | tr [:upper:] [:lower:])
-
-available_programs=( update nodejs atom askcli awscli docker golang
-  haskell ionic neovim texmaker vscode wxmaxima )
-
-[ "$os" = "elementary" -o "$os" = "" ] && os="ubuntu"
-[ "$dist" = "loki" -o "$dist" = "" ] && dist="xenial"
-
-
-if [ $EUID -eq 0 ]; then
-  sudo=""
-  [ "$SUDO_USER" = "" ] && user=$(whoami) || user=$SUDO_USER
-else
-  user=$(whoami)
-  sudo="sudo"
-fi
-
+# -----------------------------------------------------------------
+#                          M E S S A G E S
 # -----------------------------------------------------------------
 
 info() {
@@ -52,11 +41,81 @@ success() {
 }
 
 # -----------------------------------------------------------------
+#                         F U N C T I O N S
+# -----------------------------------------------------------------
 
 init_sudo() {
   info "Checking" sudo
   $sudo echo &>/dev/null
 }
+
+init_apt() {
+  # (Un)install & Update
+  # commands using apt-get
+  aptp="apt-get purge -qq -y"
+  aptu="apt-get update -qq -y"
+  apti="apt-get install -qq -y"
+}
+
+init_variables() {
+  # Temp file to save the choices
+  tmp=/tmp/setup.sh.$$
+  # Distro variables
+  os=$(lsb_release -is)
+  dist=$(lsb_release -cs)
+  os=$(echo $os | tr [:upper:] [:lower:])
+  dist=$(echo $dist | tr [:upper:] [:lower:])
+  [ "$os" = "elementary" -o "$os" = "" ]  && os="ubuntu"
+  [ "$dist" = "loki" -o "$dist" = "" ]    && dist="xenial"
+  # Context: sudo & user
+  if [ $EUID -eq 0 ]; then
+    sudo=""
+    [ "$SUDO_USER" = "" ] && user=$(whoami) || user=$SUDO_USER
+  else
+    user=$(whoami)
+    sudo="sudo"
+  fi
+}
+
+# -----------------------------------------------------------------
+
+update() {
+  info "Updating the" repositories
+  $sudo $aptu && success repositories "updated"
+}
+
+inst() {
+  info "Installing" $1
+  $sudo $apti $1 &>/dev/null
+  check $1
+}
+
+purge() {
+  warning "Removing" $1
+  $sudo $aptp $1 &>/dev/null
+}
+
+# -----------------------------------------------------------------
+
+install_deps() {
+  for dependency in $@; do
+    inst $dependency
+  done
+}
+
+install_dependencies() {
+  update
+  for dependency in ${dependencies[@]}; do
+    info "Checking" $dependency
+    if ! (dpkg -l $dependency | grep "<none>") &>/dev/null; then
+      inst $dependency
+    fi
+    # Check if the dialog theme has been set
+    [ $dependency = dialog -a ! -f $HOME/.dialogrc ] && curl -fsSL -o $HOME/.dialogrc "https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/.dialogrc"
+  done
+}
+
+# -----------------------------------------------------------------
 
 check() {
   case $1 in
@@ -75,22 +134,19 @@ check() {
   success $1 "installed"
 }
 
-# -----------------------------------------------------------------
-
-purge() {
-  warning "Removing" $1
-  $sudo $aptp $1 &>/dev/null
-}
-
-update() {
-  info "Updating the" repositories
-  $sudo $aptu && success repositories "updated"
-}
-
-install_() {
-  info "Installing" $1
-  $sudo $apti $1 &>/dev/null
-  check $1
+check_args () {
+  options=''
+  [ $# -eq 0 ] && return 1
+  if [[ " $@ " =~ " -a " ]]; then
+    options=${available_programs[@]}
+  elif [[ " $@ " =~ " --all " ]]; then
+    options=${available_programs[@]}
+  else
+    for program in $@; do
+      [[ " ${available_programs[@]} " =~ " $program " ]] || error "The program" $program "is not available"
+      options="$options $program"
+    done
+  fi
 }
 
 check_deps() {
@@ -99,10 +155,33 @@ check_deps() {
   fi
 }
 
-install_deps() {
-  for dependency in $@; do
-    install_ $dependency
-  done
+# -----------------------------------------------------------------
+
+show_dialog() {
+  dialog --clear                                                        \
+    --backtitle "CosasDePuma Setup Script"                              \
+    --title "[ M A I N - M E N U ]"                                     \
+    --checklist                                                         \
+  "\n
+  You can use the UP/DOWN arrow keys to move between the different options.
+  You can also press the first letter of the name to jump directly.
+  Press SPACE to mark/unmark an option.
+  "                                                                     \
+    20 70 10                                                            \
+    Atom      "A hackable text editor for the 21st Century" on          \
+    ASKCli    "A tool for you to manage your Alexa skills" off          \
+    AWSCli    "Universal Command Line Interface for AWS" off            \
+    Ionic     "Build apps in one codebase, for any platform." off       \
+    Docker    "Build, Ship and Deploy" on                               \
+    Golang    "The Go programming language" off                         \
+    Haskell   "An advanced, purely functional programming language" off \
+    TeXMaker  "Cross-platform open-source LaTeX editor" off             \
+    Neovim    "Vim-fork focused on extensibility and usability" on      \
+    NodeJS    "Entorno de ejecución para JavaScript" on                 \
+    VSCode    "Code  editing. Redefined" off                            \
+    wxMaxima  "Document based interface for Maxima" off                 \
+    2>"${tmp}"
+  [ "$options" = '' ] && options=$(<"${tmp}")
 }
 
 # -----------------------------------------------------------------
@@ -118,7 +197,7 @@ setup() {
         (curl -fsSL "https://packagecloud.io/AtomEditor/atom/gpgkey" | $sudo apt-key add -) &>/dev/null
         $sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
         update
-        install_ $option
+        inst $option
         ;;
       askcli)
         option=ask-cli
@@ -140,7 +219,7 @@ setup() {
         curl -fsSL "https://download.docker.com/linux/$os/gpg" | $sudo apt-key add - &>/dev/null
         $sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/$os $dist stable"
         update
-        install_ $option-ce
+        inst $option-ce
         $sudo groupadd docker &>/dev/null
         $sudo usermod -aG docker $user
         ;;
@@ -149,10 +228,10 @@ setup() {
           $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
           update
         fi
-        install_ $option-go
+        inst $option-go
         ;;
       haskell)
-        install_ $option-platform
+        inst $option-platform
         ;;
       ionic)
         check_deps npm
@@ -168,15 +247,15 @@ setup() {
           $sudo add-apt-repository -y "ppa:neovim-ppa/stable" &>/dev/null
           update
         fi
-        install_ $option
+        inst $option
         ;;
       nodejs)
         info "Adding" $option "repository"
         curl -fsSL https://deb.nodesource.com/setup_11.x | $sudo bash - &>/dev/null
         update
-        install_ $option
+        inst $option
         option=npm
-        install_ $option
+        inst $option
         info "Upgrading" $option
         $sudo $option install --global $option@latest &>/dev/null && success $option "updgraded"
         ;;
@@ -185,11 +264,11 @@ setup() {
         $sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
         $sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
         update
-        install_ code
+        inst code
         [ -f microsoft.gpg ] && rm -f microsoft.gpg
         ;;
       *)
-        install_ $option
+        inst $option
         ;;
     esac
   done
@@ -197,77 +276,24 @@ setup() {
 
 # -----------------------------------------------------------------
 
-check_args () {
-  options=''
-  [ $# -eq 0 ] && return 1
-  if [[ " $@ " =~ " -a " ]]; then
-    options=${available_programs[@]}
-  elif [[ " $@ " =~ " --all " ]]; then
-    options=${available_programs[@]}
-  else
-    for program in $@; do
-      [[ " ${available_programs[@]} " =~ " $program " ]] || error "The program" $program "is not available"
-      options="$options $program"
-    done
-  fi
+correct() {
+  clear
+  success setup "completed!"
+  exit 0
 }
 
 # -----------------------------------------------------------------
-
-init_sudo
-
-dependencies=( git curl wget dialog ca-certificates apt-transport-https software-properties-common gnupg2 )
-updated="false"
-for dependency in ${dependencies[@]}; do
-  info "Checking" $dependency
-  if ! (dpkg -l $dependency | grep "<none>") &>/dev/null; then
-    if [ "$updated" = "false" ]; then
-      update
-      updated="true"
-    fi
-    install_ $dependency
-  fi
-done
-[ $dependency = dialog -a ! -f $HOME/.dialogrc ] && curl -fsSL -o $HOME/.dialogrc "https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/.dialogrc"
-
+#                             M A I N
 # -----------------------------------------------------------------
 
-check_args $@ ||                                                      \
-dialog --clear --help-button                                          \
-  --backtitle "CosasDePuma Setup Script"                              \
-  --title "[ M A I N - M E N U ]"                                     \
-  --checklist                                                         \
-"\n
-You can use the UP/DOWN arrow keys to move between the different options.
-You can also press the first letter of the name to jump directly.
-Press SPACE to mark/unmark an option.
-"                                                                     \
-  20 70 10                                                            \
-  Update    "Update your repositories" on                             \
-  Atom      "A hackable text editor for the 21st Century" on          \
-  ASKCli    "A tool for you to manage your Alexa skills" off          \
-  AWSCli    "Universal Command Line Interface for AWS" off            \
-  Ionic     "Build apps in one codebase, for any platform." off       \
-  Docker    "Build, Ship and Deploy" on                               \
-  Golang    "The Go programming language" off                         \
-  Haskell   "An advanced, purely functional programming language" off \
-  TeXMaker  "Cross-platform open-source LaTeX editor" off             \
-  Neovim    "Vim-fork focused on extensibility and usability" on      \
-  NodeJS    "Entorno de ejecución para JavaScript" on                 \
-  VSCode    "Code  editing. Redefined" off                            \
-  wxMaxima  "Document based interface for Maxima" off                 \
-  2>"${tmp}"
-[ "$options" = '' ] && options=$(<"${tmp}")
-
+init_sudo
+install_dependencies
+init_variables
+check_args $@           || \
+show_dialog
 clear
-echo
-[ "$(echo ${options[0]} | cut -d " " -f1)" = "HELP" ] && exit 2
-
-if setup
-then
-  clear
-  success setup "completed!"
-fi
+setup                   && \
+correct
 
 # TODO:
 # - Create "man" page
