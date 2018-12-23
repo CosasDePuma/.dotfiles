@@ -106,10 +106,7 @@ install_deps() {
 install_dependencies() {
   update
   for dependency in ${dependencies[@]}; do
-    info "Checking" $dependency
-    if ! (dpkg -l $dependency | grep "<none>") &>/dev/null; then
-      inst $dependency
-    fi
+    inst $dependency
     # Check if the dialog theme has been set
     [ $dependency = dialog -a ! -f $HOME/.dialogrc ] && curl -fsSL -o $HOME/.dialogrc "https://raw.githubusercontent.com/CosasDePuma/Setup/master/config/.dialogrc"
   done
@@ -136,7 +133,7 @@ check() {
 
 check_args () {
   options=''
-  [ $# -eq 0 ] && return 1
+  [ $# -lt 1 ] && return 1
   if [[ " $@ " =~ " -a " ]]; then
     options=${available_programs[@]}
   elif [[ " $@ " =~ " --all " ]]; then
@@ -298,7 +295,6 @@ correct
 
 # TODO:
 # - Create "man" page
-# - Run "man" page in help
 # FIXME:
 # - Update & Atom can't update twice (low priority)
 # - Update & Docker can't update twice (low priority)
