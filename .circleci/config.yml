@@ -2,7 +2,7 @@ version: 2
 jobs:
   ubuntu:
     docker:
-      image: ubuntu
+      - image: ubuntu
     steps:
       # Clone the Github Project
       - checkout
