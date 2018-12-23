@@ -17,8 +17,8 @@ dist=$(lsb_release -cs)
 os=$(echo $os | tr [:upper:] [:lower:])
 dist=$(echo $dist | tr [:upper:] [:lower:])
 
-available_programs=( update nodejs atom askcli awscli ionic docker golang
-  haskell texmaker neovim vscode wxmaxima )
+available_programs=( update nodejs atom askcli awscli docker golang
+  haskell ionic neovim texmaker vscode wxmaxima )
 
 [ "$os" = "elementary" -o "$os" = "" ] && os="ubuntu"
 [ "$dist" = "loki" -o "$dist" = "" ] && dist="xenial"
@@ -26,9 +26,9 @@ available_programs=( update nodejs atom askcli awscli ionic docker golang
 
 if [ $EUID -eq 0 ]; then
   sudo=""
-  [ "$SUDO_USER" = "" ] && user=$USER || user=$SUDO_USER
+  [ "$SUDO_USER" = "" ] && user=$(whoami) || user=$SUDO_USER
 else
-  user=$USER
+  user=$(whoami)
   sudo="sudo"
 fi
 
@@ -124,7 +124,7 @@ setup() {
         option=ask-cli
         check_deps npm
         info "Installing" $option
-        $sudo npm install --global $option &>/dev/null
+        $sudo npm install --global $option #&>/dev/null
         check $option "module"
         ;;
       awscli)
@@ -144,15 +144,6 @@ setup() {
         $sudo groupadd docker &>/dev/null
         $sudo usermod -aG docker $user
         ;;
-      ionic)
-        check_deps npm
-        info "Installing" cordova
-        $sudo npm install --global cordova &>/dev/null
-        check cordova "module"
-        info "Installing" $option
-        $sudo npm install --global $option &>/dev/null
-        check $option "module"
-        ;;
       golang)
         if [ "$os" = "ubuntu" ]; then
           $sudo add-apt-repository -y "ppa:longsleep/golang-backports" &>/dev/null
@@ -163,9 +154,20 @@ setup() {
       haskell)
         install_ $option-platform
         ;;
+      ionic)
+        check_deps npm
+        info "Installing" cordova
+        $sudo npm install --global cordova &>/dev/null
+        check cordova "module"
+        info "Installing" $option
+        $sudo npm install --global $option &>/dev/null
+        check $option "module"
+        ;;
       neovim)
-        $sudo add-apt-repository -y "ppa:neovim-ppa/stable" &>/dev/null
-        update
+        if [ "$os" = "ubuntu" ]; then
+          $sudo add-apt-repository -y "ppa:neovim-ppa/stable" &>/dev/null
+          update
+        fi
         install_ $option
         ;;
       nodejs)
@@ -184,6 +186,7 @@ setup() {
         $sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
         update
         install_ code
+        [ -f microsoft.gpg ] && rm -f microsoft.gpg
         ;;
       *)
         install_ $option
@@ -260,7 +263,8 @@ clear
 echo
 [ "$(echo ${options[0]} | cut -d " " -f1)" = "HELP" ] && exit 2
 
-if setup; then
+if setup
+then
   clear
   success setup "completed!"
 fi
