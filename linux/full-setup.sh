@@ -286,6 +286,7 @@ correct() {
 #                             M A I N
 # -----------------------------------------------------------------
 
+init_apt
 init_sudo
 install_dependencies
 init_variables
