@@ -131,7 +131,7 @@ check() {
   success $1 "installed"
 }
 
-check_args () {
+check_args() {
   options=''
   [ $# -lt 1 ] && return 1
   if [[ " $@ " =~ " -a " ]]; then
@@ -156,7 +156,7 @@ check_deps() {
 
 show_dialog() {
   dialog --clear                                                        \
-    --backtitle "CosasDePuma Setup Script"                              \
+    --backtitle "CosasDePuma Program Bundle Script"                     \
     --title "[ M A I N - M E N U ]"                                     \
     --checklist                                                         \
   "\n
@@ -187,9 +187,6 @@ setup() {
   for option in ${options[@]}; do
     option=$(echo $option | tr [:upper:] [:lower:])
     case $option in
-      update)
-        update
-        ;;
       atom)
         (curl -fsSL "https://packagecloud.io/AtomEditor/atom/gpgkey" | $sudo apt-key add -) &>/dev/null
         $sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
@@ -294,7 +291,7 @@ setup                   && \
 correct
 
 # TODO:
-# - Create "man" page
+#
 # FIXME:
 # - Update & Atom can't update twice (low priority)
 # - Update & Docker can't update twice (low priority)
