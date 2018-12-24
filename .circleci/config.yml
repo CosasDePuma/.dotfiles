@@ -14,20 +14,20 @@ jobs:
       - run:
           name: Configuring Atom packages
           command: bash linux/script/atom-packages.sh --all
-    ubuntu:
-      docker:
-        - image: cosasdepuma/circleci:ubuntu
-      steps:
-        # Clone the Github Project
-        - checkout
-        # Install all programs
-        - run:
-            name: Installing all the programs
-            command: bash linux/script/program-bundle.sh --all
-        # Configuring atom packages
-        - run:
-            name: Configuring Atom packages
-            command: bash linux/script/atom-packages.sh --all
+  ubuntu:
+    docker:
+      - image: cosasdepuma/circleci:ubuntu
+    steps:
+      # Clone the Github Project
+      - checkout
+      # Install all programs
+      - run:
+          name: Installing all the programs
+          command: bash linux/script/program-bundle.sh --all
+      # Configuring atom packages
+      - run:
+          name: Configuring Atom packages
+          command: bash linux/script/atom-packages.sh --all
 
 # ===============================================
 
