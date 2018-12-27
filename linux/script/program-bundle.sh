@@ -296,5 +296,13 @@ correct
 # - Update & Atom can't update twice (low priority)
 # - Update & Docker can't update twice (low priority)
 # - Better dependency check
+# - Fixing some errors in .deb
+
+# W: chmod 0700 of directory /var/lib/apt/lists/partial failed - SetupAPTPartialDirectory (1: Operation not permitted)
+# E: Could not open lock file /var/lib/apt/lists/lock - open (13: Permission denied)
+# E: Unable to lock directory /var/lib/apt/lists/
+# W: Problem unlinking the file /var/cache/apt/pkgcache.bin - RemoveCaches (13: Permission denied)
+# W: Problem unlinking the file /var/cache/apt/srcpkgcache.bin - RemoveCaches (13: Permission denied)
+
 
 # Bash colors: https://misc.flogisoft.com/bash/tip_colors_and_formatting
