@@ -6,7 +6,7 @@
 
 dependencies=( dialog )
 available_plugins=(
-  ask-stack autoclose-html autocomplete-paths
+  atom-live-server ask-stack autoclose-html autocomplete-paths
   auto-update-packages emmet expose file-icons highlight-selected
   language-markdown markdown-pdf minimap pigments platformio-ide-terminal
   project-manager )
@@ -101,6 +101,7 @@ show_dialog() {
   Press SPACE to mark/unmark an option.
   "                                                                             \
     20 70 10                                                                    \
+    Atom-Live-Server        "Launch a http server with reloads" on              \
     Ask-Stack               "Quickly get answers from Stack Overflow" off       \
     Autoclose-HTML          "Automates closing of HTML Tags" off                \
     Autocomplete-Paths      "Adds path autocompletion to autocomplete+" on      \
