@@ -1,1 +1,3 @@
 linux/ignored
+linux/dist/*
+!linux/dist/*.deb
