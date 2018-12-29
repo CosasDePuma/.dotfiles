@@ -14,6 +14,10 @@ jobs:
       - run:
           name: Configuring Atom packages
           command: bash linux/script/atom-packages.sh --all
+      # Configuring vscode extensions
+      - run:
+          name: Configuring VSCode extensions
+          command: bash linux/script/vscode-extensions.sh --all
 
 # ===============================================
 
