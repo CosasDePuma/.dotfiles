@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------
 
 dependencies=( dialog )
-available_plugins=(
+available_packages=(
   atom-live-server ask-stack autoclose-html autocomplete-paths
   auto-update-packages emmet expose file-icons highlight-selected
   language-markdown markdown-pdf minimap pigments platformio-ide-terminal
@@ -77,13 +77,13 @@ check_args() {
   options=''
   [ $# -lt 1 ] && return 1
   if [[ " $@ " =~ " -a " ]]; then
-    options=${available_plugins[@]}
+    options=${available_packages[@]}
   elif [[ " $@ " =~ " --all " ]]; then
-    options=${available_plugins[@]}
+    options=${available_packages[@]}
   else
-    for plugin in $@; do
-      [[ " ${available_plugins[@]} " =~ " $plugin " ]] || error "The program" $plugin "is not available"
-      options="$options $plugin"
+    for package in $@; do
+      [[ " ${available_packages[@]} " =~ " $package " ]] || error "The package" $package "is not available"
+      options="$options $package"
     done
   fi
 }
@@ -92,7 +92,7 @@ check_args() {
 
 show_dialog() {
   dialog --clear                                                                \
-    --backtitle "CosasDePuma Atom Plugins Script"                               \
+    --backtitle "CosasDePuma Atom Packages Script"                              \
     --title "[ M A I N - M E N U ]"                                             \
     --checklist                                                                 \
   "\n
