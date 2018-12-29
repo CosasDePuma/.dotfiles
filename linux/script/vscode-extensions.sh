@@ -61,7 +61,8 @@ install_dependencies() {
 # -----------------------------------------------------------------
 
 inst() {
-  code --install-extension $1 --force
+
+  [ $EUID -eq 0 ] && code --install-extension $1 --force --user-data-dir="$HOME/.vscode-root" || code --install-extension $1 --force
 }
 
 # -----------------------------------------------------------------
