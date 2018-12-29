@@ -7,9 +7,8 @@
 dependencies=( dialog )
 available_packages=(
   atom-live-server ask-stack autoclose-html autocomplete-paths
-  auto-update-packages emmet expose file-icons highlight-selected
-  language-markdown markdown-pdf minimap pigments platformio-ide-terminal
-  project-manager )
+  emmet expose file-icons highlight-selected language-markdown
+  markdown-pdf minimap pigments platformio-ide-terminal project-manager )
 
 # -----------------------------------------------------------------
 #                            C O L O R S
@@ -105,7 +104,6 @@ show_dialog() {
     Ask-Stack               "Quickly get answers from Stack Overflow" off       \
     Autoclose-HTML          "Automates closing of HTML Tags" off                \
     Autocomplete-Paths      "Adds path autocompletion to autocomplete+" on      \
-    Auto-Update-Packages    "Keep your Atom packages up to date" on             \
     Emmet                   "The essential toolkit for web-developers" on       \
     Expose                  "Quick tab overview of open files" off              \
     File-Icons              "File-specific icons in Atom" on                    \
