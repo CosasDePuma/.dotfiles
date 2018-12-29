@@ -142,11 +142,12 @@ build(){
   info "creating the" "install" "config file"
   echo "atom-packages usr/bin" > debian/install
   echo "program-bundle usr/bin" >> debian/install
+  echo "vscode-extensions usr/bin" >> debian/install
   info "building the" "debian package"
   debuild -us -uc &>/dev/null || error "Some error has occurred during the" "packaging" "process"
   cd ..
   mv setup_$version-1_all.deb setup-$version.deb
-  rm -rf setup-$version setup_$version* 
+  rm -rf setup-$version setup_$version*
 }
 
 # -----------------------------------------------------------------
