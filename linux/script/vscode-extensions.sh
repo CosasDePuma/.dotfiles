@@ -160,8 +160,7 @@ setup                   && \
 correct
 
 # TODO:
-# - Create "man" page
-# - Add "time to load"
+#
 # FIXME:
 #
 
