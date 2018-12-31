@@ -130,6 +130,8 @@ check_folders() {
   mkdir -p dist/setup-$version
   info "copying" "the scripts" "to the folder"
   [ -d script ] && cp script/*.sh dist/setup-$version
+  info "copying" "the man pages" "to the folder"
+  [ -d man ] && cp man/*.gz dist/setup-$version
   cd dist/setup-$version
   for script in *.sh; do
     mv -- "$script" "${script%.sh}"
@@ -143,6 +145,8 @@ build(){
   echo "atom-packages usr/bin" > debian/install
   echo "program-bundle usr/bin" >> debian/install
   echo "vscode-extensions usr/bin" >> debian/install
+  info "creating the" "man" "files"
+  echo "*.gz" > debian/manpages
   info "building the" "debian package"
   debuild -us -uc &>/dev/null || error "Some error has occurred during the" "packaging" "process"
   cd ..
