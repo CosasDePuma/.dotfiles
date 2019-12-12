@@ -7,10 +7,20 @@ proxychains_conf=/etc/proxychains.conf
 log=$(mktemp)
 
 # Install function
-finstall () { echo "[*] Installing $1..." && apt-get install -y "${1}" 2>&1 1>"${log}"; }
+finstall()
+{
+	echo "[*] Checking $1 installation..."
+	if ! dpkg -l $1 > /dev/null
+	then
+		echo "[+] $1 already installed"
+	else
+		echo "[*] Installing $1..."
+		apt-get install -y "${1}" 2>&1 1>"${log}"
+	fi
+}
 
 # Error function
-error () { echo "${1}" && cat "${log}" && exit 1; }
+error() { echo "${1}" && cat "${log}" && exit 1; }
 
 # Check root
 test "$(id -u)" -ne 0 && error "[!] You must run this script as root!"
