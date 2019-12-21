@@ -1,57 +1,42 @@
 #!/bin/sh
+# shellcheck disable=SC1091
 
+# Import the core utils
+test -z "$SETUP_CORE_REMOTE" && SETUP_CORE_REMOTE=https://raw.githubusercontent.com/CosasDePuma/Setup/real-config/.config.sh
+export SETUP_CORE_REMOTE
+if test -f ~/.core.sh; then . ~/.core.sh; else curl -fso ~/.core.sh "$SETUP_CORE_REMOTE"; fi
+if test -f $(dirname "$0")/.core.sh; then . $(dirname "$0")/.core.sh; else . ~/.core.sh; fi
+
+# Tor configuration file
+test -z "$TOR_CONF" && TOR_CONF=/etc/tor/torrc
+export TOR_CONF
 # Proxychains configuration file
-proxychains_conf=/etc/proxychains.conf
+test -z "$PROXYCHAINS_CONF" && PROXYCHAINS_CONF=/etc/proxychains.conf
+export PROXYCHAINS_CONF
 
-# Logging file
-log=$(mktemp)
-
-# Install function
-finstall()
-{
-	echo "[*] Checking $1 installation..."
-	if ! dpkg -l $1 > /dev/null
-	then
-		echo "[+] $1 already installed"
-	else
-		echo "[*] Installing $1..."
-		apt-get install -y "${1}" 2>&1 1>"${log}"
-	fi
-}
-
-# Error function
-error() { echo "${1}" && cat "${log}" && exit 1; }
-
-# Check root
-test "$(id -u)" -ne 0 && error "[!] You must run this script as root!"
+# Check permissions
+checkroot
 
 # Install tor
-finstall tor			|| error "[!] tor cannot be installed"
-finstall proxychains		|| error "[!] proxychains cannot be installed"
+pkgget tor
+# Install proxychains
+pkgget proxychains
+
+# Configuring tor
+bckup "$TOR_CONF"
+printf 'SocksPort 0.0.0.0:9050' > "$TOR_CONF"
+
+# Configuring proxychains
+bckup "$PROXYCHAINS_CONF"
+printf '# Proxychains configuration by @CosasDePuma\n\n' > "$PROXYCHAINS_CONF"
+printf '# Skip dead proxies\ndynamic_chain\n# Proxy DNS request (no leak for DNS data)\nproxy_dns\n# Quiet mode\n#quiet_mode\n# Timeouts in millisecons\ntcp_read_time_out 15000\ntcp_connect_time_out 8000\n\n' >> "$PROXYCHAINS_CONF"
+printf '# Proxy list (Local Tor proxy)\n[ProxyList]\nsocks5	127.0.0.1 9050 # tor\n' >> "$PROXYCHAINS_CONF"
 
 # Start tor service
-service tor start 2>&1 1>"${log}" || error "[!] Tor cannot be started"
+dbgmsg "Starting tor service"
+blackhole service tor start || errlog "tor service cannot be started"
 
-# Configure proxychains
-echo "[*] Configuring proxychains..."
-mv "${proxychains_conf}" "${proxychains_conf}".old
-cat << EOF_CONF > "${proxychains_conf}"
-# Proxychain configuration by @CosasDePuma
-
-# Skip dead proxies
-dynamic_chain
-# Proxy DNS request (no leak for DNS data)
-proxy_dns
-# Quiet mode
-#quiet_mode
-# Timeouts in millisecons
-tcp_read_time_out 15000
-tcp_connect_time_out 8000
-
-# Proxy list (Local Tor proxy)
-[ProxyList]
-socks5	127.0.0.1 9050
-EOF_CONF
-
+# Check command
+checkcmd proxychains || errlog "proxychains cannot be found"
 # Done
-echo "[+] All correctly done!"
+ggwp
