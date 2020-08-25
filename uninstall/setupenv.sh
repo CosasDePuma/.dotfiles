@@ -66,7 +66,7 @@ rm -rf /usr/share/fonts/hacknerd
 # ==== REMOVE CONFIG FILES ====
 
 warning "Removing config files"
-rm -f .zsh* .p10k.zsh /root/.zsh* /root/.p10k.zsh
+rm -f "${HOME}"/.zsh* "${HOME}"/.p10k.zsh /root/.zsh* /root/.p10k.zsh
 rm -rf "${CONFIG}"/feh
 iter rm -rf "${CONFIG}"/%%
 

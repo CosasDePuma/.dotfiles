@@ -298,7 +298,7 @@ then
     chdir "${TMP}"
     nullify wget -q -O "bat.deb" "https://github.com/sharkdp/bat/releases/download/v0.15.4/bat_0.15.4_amd64.deb"
     test "66b5fa31e4946da9331824fba4b6a7076565fe83866f14562450a010a5112857" = "$(sha256sum bat.deb | cut -d' ' -f1)" || warning "bat.deb sha256 does not match"
-    dpkg -i bat.deb
+    nullify dpkg -i bat.deb
     chdir "${CWD}"
 fi
 log "lsd successfully installed"
@@ -312,7 +312,7 @@ then
     chdir "${TMP}"
     nullify wget -q -O "lsd.deb" "https://github.com/Peltoche/lsd/releases/download/0.17.0/lsd_0.17.0_amd64.deb"
     test "ac85771d6195ef817c9d14f8a8a0d027461bfc290d46cb57e434af342a327bb2" = "$(sha256sum lsd.deb | cut -d' ' -f1)" || warning "lsd.deb sha256 does not match"
-    dpkg -i lsd.deb
+    nullify dpkg -i lsd.deb
     chdir "${CWD}"
 fi
 log "lsd successfully installed"
@@ -323,7 +323,7 @@ get scrub
 
 # ==== OWN CONFIG DIRECTORY ====
 
-own "${HOME}/.xinit"
+own "${HOME}/.xinitrc"
 own "${HOME}/.zshrc"
 own "${HOME}/.p10k.zsh"
 own "${CONFIG}"

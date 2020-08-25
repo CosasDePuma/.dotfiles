@@ -26,7 +26,7 @@ alias lla="lsd -lA --group-dirs=first"
 alias lst="lsd -A --tree"
 
 # bat
-alias cat="bat --pagging=never"
+alias cat="bat --paging=never"
 alias catl="bat"
 alias catn="bat -pp"
 
