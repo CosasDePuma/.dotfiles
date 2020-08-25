@@ -177,7 +177,7 @@ getdep ${polybardep}
 polybaroptdep="libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev"
 # shellcheck disable=SC2086
 getdep ${polybaroptdep}
-log "Polybar dependencies installed"
+log "polybar dependencies installed"
 
 # Download polybar
 if test -z "$(which polybar)"
