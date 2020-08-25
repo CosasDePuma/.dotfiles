@@ -1,5 +1,0 @@
-# Dockerfunc by @CosasDePuma
-
-alias tordckr="docker run -d --rm --name tor -p 9050:9050 cosasdepuma/tor"
-alias wpscandckr="docker run -it --rm --name wpscan cosasdepuma/wpscan"
-
