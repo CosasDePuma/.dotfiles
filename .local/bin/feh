@@ -1,9 +1,0 @@
-#!/bin/sh
-
-test -z "${FEH_INTERVAL}" && FEH_INTERVAL=300
-command -v feh 2>&1 >/dev/null || exit 1
-
-while :; do
-  feh --randomize --no-fehbg --bg-fill ~/.config/wallpapers/*
-  sleep "${FEH_INTERVAL}"
-done
