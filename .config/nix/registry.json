@@ -1,0 +1,15 @@
+{
+    "flakes": [
+        {
+            "from": {
+                "type": "indirect",
+                "id": "homelab"
+            },
+            "to": {
+                "type": "github",
+                "owner": "cosasdepuma",
+                "repo": "nix"
+            }
+        }
+    ]
+}
