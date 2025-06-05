@@ -27,6 +27,13 @@ style             = "bold red"
 symbol            = "🧙 "
 
 # +---------------------------------------------+
+# |                     Git                     |
+# +---------------------------------------------+
+[git_branch]
+disabled          = false
+style             = "bold mauve"
+
+# +---------------------------------------------+
 # |                     Nix                     |
 # +---------------------------------------------+
 [nix_shell]
@@ -34,17 +41,6 @@ disabled          = false
 format            = "[$symbol $name]($style) "
 symbol            = "❄️ "
 style             = "bold blue"
-
-
-
-
-
-
-
-[git_branch]
-style = "bold mauve"
-
-
 
 # +---------------------------------------------+
 # |                   Themes                    |

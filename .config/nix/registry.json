@@ -1,15 +1,26 @@
 {
-    "flakes": [
-        {
-            "from": {
-                "type": "indirect",
-                "id": "homelab"
-            },
-            "to": {
-                "type": "github",
-                "owner": "cosasdepuma",
-                "repo": "nix"
-            }
-        }
-    ]
+  "flakes": [
+    {
+      "from": {
+        "id": "homelab",
+        "type": "indirect"
+      },
+      "to": {
+        "owner": "cosasdepuma",
+        "repo": "nix",
+        "type": "github"
+      }
+    },
+    {
+      "from": {
+        "id": "local",
+        "type": "indirect"
+      },
+      "to": {
+        "path": "/Users/pumita/Desktop/VAULT/GitHub/nix/homelab",
+        "type": "path"
+      }
+    }
+  ],
+  "version": 2
 }

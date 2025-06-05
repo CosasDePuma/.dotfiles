@@ -1,0 +1,5 @@
+--dir='.'
+--target='~'
+--ignore='.DS_Store'
+--ignore='.git'
+--ignore='LICENSE'
