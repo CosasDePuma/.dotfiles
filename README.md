@@ -3,6 +3,7 @@
 # 🌈 A collection of my personal dotfiles 🦄
 
 <img src=".github/logo.png" alt=".dotfiles" />
+<br/><br/>
 </div>
 
 This repository contains my personal configuration files for various tools and applications. Feel free to explore and use anything you find useful!
@@ -24,16 +25,18 @@ stow --adopt .config/git
 
 ## 📄 .Files
 
-| Tool | Config | Description |
-|------|--------|-------------|
-| [Curl](https://curl.se/) | [.curlrc](.curlrc) | Command line tool for transferring data |
-| [Direnv](https://direnv.net/) | [.config/direnv/](.config/direnv/) | Environment switcher for the shell |
-| [Git](https://git-scm.com/) | [.config/git/](.config/git/) | Version control system |
-| [Nix](https://nixos.org/) | [.config/nix/](.config/nix/) | Package manager (Nix ecosystem) |
-| [SSH](https://www.openssh.com) | [.ssh/](.ssh/) | Secure remote login and file transfer |
-| [Starship](https://starship.rs/) | [.config/starship.toml](.config/starship.toml) | Cross-shell prompt |
-| Wallpapers | [.config/wallpapers/](.config/wallpapers/) | My personal wallpaper collection |
-| [Wget](https://www.gnu.org/software/wget/) | [.wgetrc](.wgetrc) | File download utility |
+| Tool                                       | Config                                         | Description                             |
+|--------------------------------------------|------------------------------------------------|-----------------------------------------|
+| [Curl](https://curl.se/)                   | [.curlrc](.curlrc)                             | Command line tool for transferring data |
+| [Direnv](https://direnv.net/)              | [.config/direnv/](.config/direnv/)             | Environment switcher for the shell      |
+| [Git](https://git-scm.com/)                | [.config/git/](.config/git/)                   | Version control system                  |
+| [Nix](https://nixos.org/)                  | [.config/nix/](.config/nix/)                   | Package manager (Nix ecosystem)         |
+| [SSH](https://www.openssh.com)             | [.ssh/](.ssh/)                                 | Secure remote login and file transfer   |
+| [Starship](https://starship.rs/)           | [.config/starship.toml](.config/starship.toml) | Cross-shell prompt                      |
+| [Bat](https://github.com/sharkdp/bat)      | [.config/bat/](.config/bat/)                   | Modern `cat` replacement                |
+| [LSD](https://github.com/lsd-rs/lsd)       | [.config/lsd/](.config/lsd/)                   | Modern `ls` replacement                 |
+| Wallpapers                                 | [.config/wallpapers/](.config/wallpapers/)     | My personal wallpaper collection        |
+| [Wget](https://www.gnu.org/software/wget/) | [.wgetrc](.wgetrc)                             | File download utility                   |
 
 ## 🎨 Theme
 
