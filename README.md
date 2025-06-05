@@ -1,8 +1,8 @@
 <div align="center">
-    <img src=".github/logo.png" alt=".dotfiles" />
 
-> 🌈 A collection of my personal dotfiles 🦄
+# 🌈 A collection of my personal dotfiles 🦄
 
+<img src=".github/logo.png" alt=".dotfiles" />
 </div>
 
 This repository contains my personal configuration files for various tools and applications. Feel free to explore and use anything you find useful!
@@ -41,7 +41,7 @@ By default, I'm using the [Catppuccin](https://github.com/catppuccin/catppuccin)
 
 ## 📝 License
 
-This project is licensed under the [WTFPL License](LICENSE) - do what the f*** you want with these dotfiles!
+This project is licensed under the [WTFPL License](LICENSE). Do what the f*ck you want with these dotfiles!
 
 ---
 
