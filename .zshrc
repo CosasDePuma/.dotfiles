@@ -1,4 +1,16 @@
 # +----------------------------------+
+# |             Homebrew             |
+# +----------------------------------+
+# Package manager for macOS and Linux
+# https://brew.sh/
+
+test -x /opt/homebrew/bin/brew && {
+  export HOMEBREW_NO_ANALYTICS=1
+  export PATH="${PATH}:/opt/homebrew/bin"
+  eval $(/opt/homebrew/bin/brew shellenv)
+}
+
+# +----------------------------------+
 # |               Bat                |
 # +----------------------------------+
 # Better `cat` command with syntax highlighting
@@ -11,17 +23,7 @@ command -v bat >/dev/null 2>&1 && {
 }
 
 # +----------------------------------+
-# |             Homebrew             |
-# +----------------------------------+
-# Package manager for macOS and Linux
-# https://brew.sh/
-
-command -v brew >/dev/null 2>&1 && {
-  export HOMEBREW_NO_ANALYTICS=1
-}
-
-# +----------------------------------+
-# |               Lsd                |
+# |               LSD                |
 # +----------------------------------+
 # Modern replacement for `ls` with colors and icons
 # https://github.com/lsd-rs/lsd

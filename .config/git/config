@@ -1,22 +1,22 @@
 [alias]
-    aliases = config --global --get-regexp 'alias\\.'
-    graph = log --graph --all --color --abbrev-commit --oneline --decorate
-    fullgraph = log --graph --all --color --abbrev-commit --date=relative --pretty=format:'%C(red)%h%C(green)%d%C(reset)%x20%cd%C(bold blue)%x20%cn%C(reset)%C(yellow)%x20(%ce)%x20%C(cyan)%C(reset)%x20%s'
-    last = log -1 HEAD
+    aliases = "config --global --get-regexp 'alias\\.'"
+    graph = "log --graph --all --color --abbrev-commit --oneline --decorate"
+    fullgraph = "log --graph --all --color --abbrev-commit --date=relative --pretty=format:'%C(red)%h%C(green)%d%C(reset)%x20%cd%C(bold blue)%x20%cn%C(reset)%C(yellow)%x20(%ce)%x20%C(cyan)%C(reset)%x20%s'"
+    last = "log -1 HEAD"
 [color]
     ui = true
 [core]
     excludesfile = ~/.config/git/ignore
 [pull]
-    ff = only
+    ff = "only"
 [help]
     autocorrect = 1
 [init]
-    defaultBranch = main
+    defaultBranch = "main"
 [url "git@github.com:"]
   insteadOf = "gh:"
 [url "https://github.com/"]
   insteadOf = "github:"
 [user]
-    name = Kike Fontan
-    email = 26680023+CosasDePuma@users.noreply.github.com
+    name = "Kike Fontán"
+    email = "26680023+CosasDePuma@users.noreply.github.com"
