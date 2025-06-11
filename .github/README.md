@@ -2,7 +2,7 @@
 
 # 🌈 A collection of my personal dotfiles 🦄
 
-<img src=".github/logo.png" alt=".dotfiles" />
+<img src="logo.png" alt=".dotfiles" />
 <br/><br/>
 </div>
 
