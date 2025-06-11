@@ -3,20 +3,35 @@
     graph = "log --graph --all --color --abbrev-commit --oneline --decorate"
     fullgraph = "log --graph --all --color --abbrev-commit --date=relative --pretty=format:'%C(red)%h%C(green)%d%C(reset)%x20%cd%C(bold blue)%x20%cn%C(reset)%C(yellow)%x20(%ce)%x20%C(cyan)%C(reset)%x20%s'"
     last = "log -1 HEAD"
+
 [color]
     ui = true
+[color "branch"]
+    current = green
+    local = black dim
+    remote = yellow
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = black dim
+
 [core]
     excludesfile = ~/.config/git/ignore
+
 [pull]
     ff = "only"
+
 [help]
     autocorrect = 1
+
 [init]
     defaultBranch = "main"
+
 [url "git@github.com:"]
   insteadOf = "gh:"
 [url "https://github.com/"]
   insteadOf = "github:"
+
 [user]
     name = "Kike Fontán"
     email = "26680023+CosasDePuma@users.noreply.github.com"

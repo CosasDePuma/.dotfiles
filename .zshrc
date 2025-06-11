@@ -23,6 +23,16 @@ command -v bat >/dev/null 2>&1 && {
 }
 
 # +----------------------------------+
+# |              Direnv              |
+# +----------------------------------+
+# Environment switcher for the shell
+# https://direnv.net/
+
+command -v direnv >/dev/null 2>&1 && {
+  eval "$(direnv hook zsh)"
+}
+
+# +----------------------------------+
 # |               LSD                |
 # +----------------------------------+
 # Modern replacement for `ls` with colors and icons
