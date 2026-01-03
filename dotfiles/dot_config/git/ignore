@@ -1,0 +1,11 @@
+# Backups
+/**/*~
+/**/*.bck
+/**/*.swp
+
+# OS
+/**/.desktop.ini
+/**/.DS_Store
+
+# Node
+/**/node_modules/
