@@ -1,0 +1,34 @@
+# Wait before timing out.
+connect-timeout = 60
+dns-timeout = 30
+max-time = 0
+
+# Automatically set the previous URL as referer when following a redirect.
+referer = ";auto"
+
+# Follow HTTP redirects by default.
+location = true
+
+# Retry a few times when a request fails.
+retry = 5
+retry-delay = 5
+retry-connrefused = true
+
+# Resume partially downloaded files when possible.
+continue-at = -
+
+# Enable HTTP compression when supported by the server.
+compressed = true
+
+# Show a consistent progress bar.
+progress-bar = true
+
+# Use the system CA certificates.
+{{- if eq .chezmoi.os "darwin" }}
+cacert = /etc/ssl/cert.pem
+{{- else }}
+capath = /etc/ssl/certs
+{{- end }}
+
+# Disguise as IE 9 on Windows 7.
+user-agent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)"
