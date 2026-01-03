@@ -1,0 +1,8 @@
+font-family = "FiraCode Nerd Font Mono"
+font-feature = "+liga"
+font-size = 15
+font-thicken = true
+term = "xterm-256color"
+theme = "Catppuccin Macchiato"
+window-padding-x = 20
+window-padding-y = 10
