@@ -1,7 +1,7 @@
 Host *.homelab
   Port           64022
   ForwardAgent   yes
-  IdentityFile   ~/.ssh/keys/nixos
+  IdentityFile   ~/.ssh/keys/homelab
 
 # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 # ┃                  Hardware                 ┃
@@ -11,7 +11,7 @@ Host nuc
   HostName       192.168.1.4
   User           root
   Port           22
-  IdentityFile   ~/.ssh/keys/nixos
+  IdentityFile   ~/.ssh/keys/homelab
 
 # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 # ┃                    LAN                    ┃
