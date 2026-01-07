@@ -39,3 +39,14 @@ Host automation.homelab
   ProxyJump      router.homelab
   HostName       10.0.10.4
   User           automation
+
+# ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+# ┃             VLAN: VULNERABLE              ┃
+# ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Host kali.vulnerable
+  ProxyJump      router.homelab
+  HostName       10.0.20.10
+  User           root
+  Port           22
+  IdentityFile   ~/.ssh/keys/homelab
