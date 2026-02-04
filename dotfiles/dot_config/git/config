@@ -1,0 +1,89 @@
+# +----------------------------------+
+# |              Alias               |
+# +----------------------------------+
+# Custom shortcuts for common Git commands
+
+[alias]
+    aliases = "config --global --get-regexp 'alias\\.'"
+    graph = "log --graph --all --color --abbrev-commit --oneline --decorate"
+    fullgraph = "log --graph --all --color --abbrev-commit --date=relative --pretty=format:'%C(red)%h%C(green)%d%C(reset)%x20%cd%C(bold blue)%x20%cn%C(reset)%C(yellow)%x20(%ce)%x20%C(cyan)%C(reset)%x20%s'"
+    last = "log -1 HEAD"
+
+# +----------------------------------+
+# |              Color               |
+# +----------------------------------+
+# Color configuration for better readability in output
+
+[color]
+    ui = true
+
+[color "branch"]
+    current = green
+    local = black dim
+    remote = yellow
+
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = black dim
+
+# +----------------------------------+
+# |               Core               |
+# +----------------------------------+
+# Core settings and global ignore file
+
+[core]
+    excludesfile = ~/.config/git/ignore
+
+# +----------------------------------+
+# |              Help                |
+# +----------------------------------+
+# Settings for typo correction
+
+[help]
+    autocorrect = 1
+
+# +----------------------------------+
+# |              Init                |
+# +----------------------------------+
+# Default settings when initializing repositories
+
+[init]
+    defaultBranch = "main"
+
+# +----------------------------------+
+# |               Log                |
+# +----------------------------------+
+# Logging preferences
+
+[log]
+    date = human
+
+# +----------------------------------+
+# |              Pull                |
+# +----------------------------------+
+# Behavior when pulling changes
+
+[pull]
+    ff = "only"
+
+# +----------------------------------+
+# |         URL Substitution         |
+# +----------------------------------+
+# Shortcuts for GitHub remotes
+
+[url "git@github.com:"]
+    insteadOf = "github:"
+
+[url "https://github.com/"]
+    insteadOf = "github.com:"
+
+# +----------------------------------+
+# |              User                |
+# +----------------------------------+
+# Author identity for commits
+
+[user]
+    name = "Kike Fontán"
+    email = "26680023+CosasDePuma@users.noreply.github.com"
+

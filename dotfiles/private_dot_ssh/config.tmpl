@@ -1,0 +1,20 @@
+{{- if eq .chezmoi.os "darwin" -}}
+Include ~/.orbstack/ssh/config
+{{ end -}}
+Include ~/.ssh/config.d/*
+
+Host github.com
+  HostName      github.com
+  User          git
+  IdentityFile  ~/.ssh/keys/default
+
+Host *
+  AddKeysToAgent        yes
+  IdentitiesOnly        yes
+  ServerAliveInterval   60
+  ServerAliveCountMax   3
+  StrictHostKeyChecking no
+  UserKnownHostsFile    /dev/null
+{{- if eq .chezmoi.os "darwin" }}
+  UseKeychain           yes
+{{- end }}
