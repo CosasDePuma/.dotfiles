@@ -48,12 +48,22 @@ command -v lsd >/dev/null 2>&1 && {
 }
 
 # +----------------------------------+
+# |               Nix                |
+# +----------------------------------+
+# Declarative builds and deployments
+# https://nixos.org/
+
+test -d /nix && {
+  export PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+}
+
+# +----------------------------------+
 # |             OpenCode             |
 # +----------------------------------+
 # The open source coding agent
 # https://opencode.ai/
 
-file -f ~/.opencode/bin/opencode && {
+test -f ~/.opencode/bin/opencode && {
   export PATH="${PATH}:~/.opencode/bin/opencode"
 }
 
