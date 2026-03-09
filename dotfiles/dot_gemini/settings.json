@@ -1,0 +1,50 @@
+{
+  "billing": {
+    "overageStrategy": "ask"
+  },
+  "context": {
+    "fileFiltering": {
+      "enableFuzzySearch": true,
+      "enableRecursiveFileSearch": true,
+      "respectGeminiIgnore": true,
+      "respectGitIgnore": true
+    }
+  },
+  "experimental": {
+    "enableAgents": true,
+    "plan": true,
+    "toolOutputMasking": {
+      "enabled": true
+    }
+  },
+  "general": {
+    "enableAutoUpdates": true,
+    "plan": {
+      "modelRouting": true
+    },
+    "maxAttempts": 10,
+    "sessionRetention": {
+      "enabled": true,
+      "maxAge": "7d"
+    }
+  },
+  "ide": {
+    "enabled": true,
+    "hasSeenNudge": true
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    },
+    "blockGitExtensions": true,
+    "environmentVariableRedaction": {
+      "enabled": true
+    }
+  },
+  "ui": {
+    "inlineThinkingMode": "off"
+  }
+}
